@@ -1,0 +1,22 @@
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+.skip-link { position: fixed; top: .75rem; left: .75rem; z-index: 100; transform: translateY(-150%); border-radius: var(--radius-sm); background: var(--text); color: var(--surface); padding: .75rem 1rem; font-size: .82rem; font-weight: 800; text-decoration: none; }
+.skip-link:focus { transform: translateY(0); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.brand-mark { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 12px; background: var(--brand-strong); color: var(--on-brand); box-shadow: 0 8px 20px rgba(23,76,44,.18); }
+.brand-wordmark { display: block; color: var(--text); font-size: .94rem; font-weight: 800; letter-spacing: .16em; line-height: 1; }
+.brand-tagline { display: block; margin-top: .3rem; color: var(--muted); font-size: .58rem; font-weight: 700; letter-spacing: .08em; line-height: 1; text-transform: uppercase; }
+.button, .primary-link, .secondary-link { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; gap: .55rem; border: 1px solid transparent; border-radius: 10px; cursor: pointer; padding: .72rem 1.1rem; font-size: .86rem; font-weight: 800; text-decoration: none; transition: background-color 180ms ease,border-color 180ms ease,color 180ms ease,transform 180ms ease; }
+.button:hover, .primary-link:hover, .secondary-link:hover { transform: translateY(-1px); }
+.button-primary, .primary-link { background: var(--brand-strong); color: var(--on-brand); }
+.button-primary:hover, .primary-link:hover { background: var(--brand); }
+.button-secondary, .secondary-link { border-color: var(--border); background: var(--surface); color: var(--text); }
+.button-secondary:hover, .secondary-link:hover { border-color: var(--brand); color: var(--brand-strong); }
+.eyebrow { margin: 0; color: var(--brand); font-size: .7rem; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+.icon-button { display: inline-grid; width: 42px; height: 42px; flex: 0 0 auto; cursor: pointer; place-items: center; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); }
+.theme-toggle { display:inline-flex; min-height:40px; align-items:center; gap:.4rem; border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--muted-strong); cursor:pointer; padding:0 .65rem; font-size:.7rem; font-weight:750; }
+.theme-toggle:hover { border-color:var(--border-strong); color:var(--text); }
+.centered-state, .error-page { display: flex; min-height: 68vh; max-width: 720px; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0 auto; padding: 2rem; }
+.error-page { min-height: 100vh; }
+.centered-state h1, .error-page h1 { margin: .85rem 0 0; font-size: clamp(2.2rem,5vw,4rem); line-height: 1.06; }
+.centered-state > p:not(.eyebrow), .error-page > p:not(.eyebrow) { margin: 1rem 0 1.5rem; color: var(--muted); line-height: 1.75; }
+.error-page > svg { margin-bottom: 1.25rem; color: var(--brand); }

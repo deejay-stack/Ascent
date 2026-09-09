@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import "tailwindcss" source("./");
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+  --color-ink-50: #fafaf9;
+  --color-ink-100: #f5f5f4;
+  --color-ink-200: #e7e5e4;
+  --color-ink-300: #d6d3d1;
+  --color-ink-400: #a8a29e;
+  --color-ink-500: #78716c;
+  --color-ink-600: #57534e;
+  --color-ink-700: #44403c;
+  --color-ink-800: #292524;
+  --color-ink-900: #1c1917;
+  --color-ink-950: #121a15;
+  --color-brand-50: #f1f7f2;
+  --color-brand-100: #dcecdf;
+  --color-brand-500: #2f7d4a;
+  --color-brand-600: #24663b;
+  --color-brand-700: #1b5030;
+  --color-brand-900: #133824;
+}
+
+:root {
+  --page: #f2f0e6;
+  --page-alt: #e8e4d6;
+  --surface: #ffffff;
+  --surface-soft: #eeece2;
+  --surface-raised: #ffffff;
+  --nav: rgba(248, 247, 242, 0.84);
+  --text: #171916;
+  --muted: #73766f;
+  --muted-strong: #4d514b;
+  --border: #d4d1c5;
+  --border-strong: #b9b5a8;
+  --brand: #246b42;
+  --brand-strong: #174d30;
+  --brand-soft: #dce8d8;
+  --on-brand: #ffffff;
+  --accent: #b8f34a;
+  --lime: #b8f34a;
+  --charcoal: #171916;
+  --cream: #f2f0e6;
+  --warm-neutral: #c9b38c;
+  --focus: #2f7d4a;
+  --focus-ring: rgba(47, 125, 74, 0.2);
+  --success: #247a46;
+  --warning: #aa6b12;
+  --danger: #b43c34;
+  --info: #316f9f;
+  --shadow-xs: 0 1px 2px rgba(20, 31, 23, 0.05);
+  --shadow-sm: 0 8px 24px rgba(25, 39, 29, 0.07);
+  --shadow-md: 0 18px 48px rgba(25, 39, 29, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  color: var(--text);
+  color-scheme: light;
+  background: var(--page);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root.dark {
+  --page: #171916;
+  --page-alt: #151d17;
+  --surface: #19221b;
+  --surface-soft: #1e2921;
+  --surface-raised: #202b23;
+  --nav: rgba(16, 22, 18, 0.88);
+  --text: #f0f4ef;
+  --muted: #9eaaa0;
+  --muted-strong: #c4cdc5;
+  --border: #303c33;
+  --border-strong: #465449;
+  --brand: #6fbe82;
+  --brand-strong: #94d2a2;
+  --brand-soft: #203c29;
+  --on-brand: #102317;
+  --accent: #e2b55f;
+  --focus: #83ca94;
+  --focus-ring: rgba(111, 190, 130, 0.2);
+  --success: #77c98d;
+  --warning: #e2b55f;
+  --danger: #ee8178;
+  --info: #83b9dd;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.18);
+  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 20px 50px rgba(0, 0, 0, 0.28);
+  color-scheme: dark;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 92px; }
+body { min-width: 320px; min-height: 100vh; margin: 0; background: var(--page); }
+body, button, input, select, textarea { font-family: "Inter", ui-sans-serif, system-ui, sans-serif; }
+h1, h2, h3, h4, .brand-wordmark { font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+* { box-sizing: border-box; }
+::selection { background: rgba(47, 125, 74, 0.22); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

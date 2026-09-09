@@ -1,0 +1,14 @@
+export const products = [
+  { id: 'sample-rice', name: 'Premium Jasmine Rice', category: 'Pantry', price: 349, unit: '5 kg bag', stock: 24, initials: 'JR', tone: 'sand', description: 'Fragrant, long-grain jasmine rice selected for fluffy everyday meals.', featured: true },
+  { id: 'sample-milk', name: 'Fresh Whole Milk', category: 'Dairy', price: 98, unit: '1 liter', stock: 18, initials: 'FM', tone: 'blue', description: 'Creamy pasteurized whole milk, chilled and ready for breakfast or baking.', featured: true },
+  { id: 'sample-apples', name: 'Crisp Red Apples', category: 'Fresh Produce', price: 165, unit: '1 kg', stock: 31, initials: 'RA', tone: 'rose', description: 'Sweet, crisp red apples packed fresh for snacks, salads, and lunch boxes.', featured: true },
+  { id: 'sample-coffee', name: 'Mountain Roast Coffee', category: 'Beverages', price: 245, unit: '250 g', stock: 12, initials: 'MC', tone: 'amber', description: 'A balanced medium roast with cocoa notes and a smooth, comforting finish.', featured: true },
+  { id: 'whole-wheat-bread', name: 'Whole Wheat Bread', category: 'Bakery', price: 82, unit: '600 g loaf', stock: 9, initials: 'WB', tone: 'sand', description: 'Soft sliced bread made with whole wheat flour for toast and sandwiches.' },
+  { id: 'free-range-eggs', name: 'Free Range Eggs', category: 'Dairy', price: 132, unit: '12 pieces', stock: 20, initials: 'FE', tone: 'amber', description: 'A dozen carefully packed free-range eggs from a local partner farm.' },
+  { id: 'coconut-water', name: 'Pure Coconut Water', category: 'Beverages', price: 76, unit: '1 liter', stock: 15, initials: 'CW', tone: 'mint', description: 'Refreshing coconut water with no added sugar or artificial flavoring.' },
+  { id: 'banana-chips', name: 'Golden Banana Chips', category: 'Snacks', price: 89, unit: '200 g', stock: 27, initials: 'BC', tone: 'amber', description: 'Thin, crunchy banana slices with a light caramel sweetness.' },
+  { id: 'dishwashing-liquid', name: 'Citrus Dishwashing Liquid', category: 'Household', price: 118, unit: '750 ml', stock: 7, initials: 'DL', tone: 'mint', description: 'Concentrated grease-cutting dish soap with a clean citrus scent.' },
+  { id: 'bath-soap', name: 'Gentle Bath Soap', category: 'Personal Care', price: 64, unit: '3 bars', stock: 22, initials: 'BS', tone: 'lavender', description: 'Mild cleansing bars with a soft, fresh scent for everyday care.' },
+  { id: 'frozen-mango', name: 'Frozen Mango Cubes', category: 'Frozen', price: 185, unit: '500 g', stock: 6, initials: 'MG', tone: 'rose', description: 'Ripe mango cubes frozen at peak sweetness for smoothies and desserts.' },
+  { id: 'pasta-spaghetti', name: 'Durum Wheat Spaghetti', category: 'Pantry', price: 92, unit: '500 g', stock: 35, initials: 'SP', tone: 'sand', description: 'Firm durum wheat pasta that holds sauces beautifully.' },
+]

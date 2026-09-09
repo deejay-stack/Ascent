@@ -1,0 +1,9 @@
+@import "./styles/base.css";
+@import "./styles/loader.css";
+@import "./styles/public.css";
+@import "./styles/landing.css";
+@import "./styles/auth.css";
+@import "./styles/catalog.css";
+@import "./styles/dashboard.css";
+
+@import './styles/operations.css';

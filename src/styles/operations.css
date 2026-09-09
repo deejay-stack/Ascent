@@ -117,6 +117,8 @@ button:disabled { cursor:not-allowed; opacity:.48; transform:none; }
 .alert-list { list-style:none; margin:0; padding:0; }
 .alert-list li { display:flex; justify-content:space-between; gap:15px; border-bottom:1px solid var(--border); padding:13px 0; font-size:.8rem; }
 .profile-details { display:grid; grid-template-columns:80px 1fr; gap:16px; font-size:.85rem; }
+.editor-image { width:140px; border-radius:8px; }
+.connection-indicator { position:fixed; bottom:8px; right:12px; z-index:20; padding:5px 9px; border-radius:4px; background:var(--surface); color:var(--muted-strong); font-size:.65rem; border:1px solid var(--border); pointer-events:none; }
 @media(min-width:1024px) { .dashboard-shell .icon-button.lg\:hidden { display:none; } }
 @media(min-width:761px) { .billing-panel { top:96px; max-height:calc(100dvh - 112px); overflow-y:auto; } }
 @media(max-width:1200px) { .pos-layout { grid-template-columns:minmax(0,1fr) 330px; gap:16px; } .billing-panel { padding:17px; } .report-grid { grid-template-columns:1fr; } }

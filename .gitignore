@@ -13,6 +13,9 @@ dist-ssr
 *.local
 server/data.json
 artifacts/
+.env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*

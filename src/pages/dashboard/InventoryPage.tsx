@@ -1,3 +1,4 @@
+import { CategoryModal } from '../../components/inventory/CategoryModal'
 import { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { useCommerceRevision } from '../../hooks/useProducts'
@@ -7,12 +8,233 @@ import { ProductImage } from '../../components/catalog/ProductImage'
 import { StockAdjustmentModal } from '../../components/inventory/StockAdjustmentModal'
 import { ProductEditModal } from '../../components/inventory/ProductEditModal'
 export function InventoryPage() {
-  const {user}=useAuth();useCommerceRevision()
-  const [search,setSearch]=useState(''),[category,setCategory]=useState(''),[status,setStatus]=useState(''),[adjust,setAdjust]=useState(''),[edit,setEdit]=useState(''),[history,setHistory]=useState('')
-  if(!user)return null
-  const all=inventoryService.list(user),movements=inventoryService.movements(user)
-  const stockStatus=(p:typeof all[number])=>p.isArchived?'Archived':p.stockQuantity===0?'Out of Stock':p.stockQuantity<=p.lowStockThreshold?'Low Stock':'In Stock'
-  const products=all.filter(p=>(!search||[p.name,p.sku,p.barcode,p.brand].join(' ').toLowerCase().includes(search.toLowerCase()))&&(!category||p.categoryId===category)&&(!status||stockStatus(p)===status))
-  const adjustment=all.find(p=>p.id===adjust),editing=all.find(p=>p.id===edit)
-  return <div className="operations-page"><header className="operations-heading"><div><p className="eyebrow">Stock control</p><h2>Inventory</h2><p>Every stock change has a reason and a record.</p></div></header><div className="compact-stats">{[['Active products',all.filter(p=>!p.isArchived).length],['Low stock',all.filter(p=>stockStatus(p)==='Low Stock').length],['Out of stock',all.filter(p=>stockStatus(p)==='Out of Stock').length],['Movements',movements.length]].map(([label,value])=><article key={label}><span>{label}</span><strong>{value}</strong></article>)}</div><div className="table-filters"><label className="field">Search inventory<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Product, SKU or barcode"/></label><label className="field">Category<select value={category} onChange={e=>setCategory(e.target.value)}><option value="">All categories</option>{productService.categories().map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label><label className="field">Stock status<select value={status} onChange={e=>setStatus(e.target.value)}><option value="">All statuses</option>{['In Stock','Low Stock','Out of Stock','Archived'].map(s=><option key={s}>{s}</option>)}</select></label></div><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Product / SKU</th><th>Stock</th><th>Status</th><th>Price</th>{user.role==='owner'&&<th>Cost</th>}<th>Actions</th></tr></thead><tbody>{products.map(p=><tr key={p.id}><td><div className="table-product"><ProductImage product={p}/><span><strong>{p.name}</strong><small>{p.sku} · {p.unit}</small></span></div></td><td>{p.stockQuantity}<small>Alert at {p.lowStockThreshold}</small></td><td><span className={`stock-badge ${stockStatus(p)==='Low Stock'||p.stockQuantity===0?'warning':''}`}>{stockStatus(p)}</span>{!p.isAvailable&&<small>Unavailable for sale</small>}</td><td>{money(p.sellingPrice)}</td>{user.role==='owner'&&<td>{money(p.costPrice??0)}</td>}<td><div className="action-row"><button className="text-action" onClick={()=>setAdjust(p.id)}>Adjust stock</button><button className="text-action" onClick={()=>{setHistory(p.id);document.getElementById('movement-history')?.scrollIntoView({behavior:'smooth'})}}>History</button>{user.role==='owner'&&<button className="text-action" onClick={()=>setEdit(p.id)}>Edit</button>}</div></td></tr>)}</tbody></table>{!products.length&&<p className="pos-empty">No matching inventory.</p>}</div><section className="report-panel" id="movement-history"><header className="operations-heading"><h3>Inventory movement history</h3><label className="field">Product history<select value={history} onChange={e=>setHistory(e.target.value)}><option value="">All products</option>{all.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Date / user</th><th>Product</th><th>Type / reason</th><th>Change</th><th>Before → after</th></tr></thead><tbody>{movements.filter(m=>!history||m.productId===history).map(m=><tr key={m.id}><td>{new Date(m.createdAt).toLocaleString('en-PH')}<small>{m.responsibleUser}</small></td><td>{m.productName}</td><td>{m.type}<small>{m.reason}</small><small>{m.reference}</small></td><td>{m.quantity>0?'+':''}{m.quantity}</td><td>{m.before} → {m.after}</td></tr>)}</tbody></table>{!movements.filter(m=>!history||m.productId===history).length&&<p className="pos-empty">No stock movements yet.</p>}</div></section>{adjustment&&<StockAdjustmentModal product={adjustment} actor={user} onClose={()=>setAdjust('')}/>} {editing&&<ProductEditModal product={editing} actor={user} onClose={()=>setEdit('')}/>}</div>
+  const { user } = useAuth()
+  useCommerceRevision()
+  const [search, setSearch] = useState(''),
+    [category, setCategory] = useState(''),
+    [status, setStatus] = useState(''),
+    [adjust, setAdjust] = useState(''),
+    [edit, setEdit] = useState(''),
+    [history, setHistory] = useState(''),
+    [creating, setCreating] = useState(false),
+    [categoriesOpen, setCategoriesOpen] = useState(false)
+  if (!user) return null
+  const all = inventoryService.list(user),
+    movements = inventoryService.movements(user)
+  const stockStatus = (p: (typeof all)[number]) =>
+    p.isArchived
+      ? 'Archived'
+      : p.stockQuantity === 0
+        ? 'Out of Stock'
+        : p.stockQuantity <= p.lowStockThreshold
+          ? 'Low Stock'
+          : 'In Stock'
+  const products = all.filter(
+    (p) =>
+      (!search ||
+        [p.name, p.sku, p.barcode, p.brand]
+          .join(' ')
+          .toLowerCase()
+          .includes(search.toLowerCase())) &&
+      (!category || p.categoryId === category) &&
+      (!status || stockStatus(p) === status),
+  )
+  const adjustment = all.find((p) => p.id === adjust),
+    editing = all.find((p) => p.id === edit)
+  return (
+    <div className="operations-page">
+      <header className="operations-heading">
+        <div>
+          <p className="eyebrow">Stock control</p>
+          <h2>Inventory</h2>
+          <p>Every stock change has a reason and a record.</p>
+        </div>
+        {user.role === 'owner' && (
+          <div className="action-row">
+            <button className="button button-secondary" onClick={() => setCategoriesOpen(true)}>
+              Manage categories
+            </button>
+            <button className="button button-primary" onClick={() => setCreating(true)}>
+              Add product
+            </button>
+          </div>
+        )}
+      </header>
+      <div className="compact-stats">
+        {[
+          ['Active products', all.filter((p) => !p.isArchived).length],
+          ['Low stock', all.filter((p) => stockStatus(p) === 'Low Stock').length],
+          ['Out of stock', all.filter((p) => stockStatus(p) === 'Out of Stock').length],
+          ['Movements', movements.length],
+        ].map(([label, value]) => (
+          <article key={label}>
+            <span>{label}</span>
+            <strong>{value}</strong>
+          </article>
+        ))}
+      </div>
+      <div className="table-filters">
+        <label className="field">
+          Search inventory
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Product, SKU or barcode"
+          />
+        </label>
+        <label className="field">
+          Category
+          <select value={category} onChange={(e) => setCategory(e.target.value)}>
+            <option value="">All categories</option>
+            {productService.categories().map((c) => (
+              <option value={c.id} key={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="field">
+          Stock status
+          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option value="">All statuses</option>
+            {['In Stock', 'Low Stock', 'Out of Stock', 'Archived'].map((s) => (
+              <option key={s}>{s}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div className="data-table-wrap">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Product / SKU</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Price</th>
+              {user.role === 'owner' && <th>Cost</th>}
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((p) => (
+              <tr key={p.id}>
+                <td>
+                  <div className="table-product">
+                    <ProductImage product={p} />
+                    <span>
+                      <strong>{p.name}</strong>
+                      <small>
+                        {p.sku} · {p.unit}
+                      </small>
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  {p.stockQuantity}
+                  <small>Alert at {p.lowStockThreshold}</small>
+                </td>
+                <td>
+                  <span
+                    className={`stock-badge ${stockStatus(p) === 'Low Stock' || p.stockQuantity === 0 ? 'warning' : ''}`}
+                  >
+                    {stockStatus(p)}
+                  </span>
+                  {!p.isAvailable && <small>Unavailable for sale</small>}
+                </td>
+                <td>{money(p.sellingPrice)}</td>
+                {user.role === 'owner' && <td>{money(p.costPrice ?? 0)}</td>}
+                <td>
+                  <div className="action-row">
+                    <button className="text-action" onClick={() => setAdjust(p.id)}>
+                      Adjust stock
+                    </button>
+                    <button
+                      className="text-action"
+                      onClick={() => {
+                        setHistory(p.id)
+                        document
+                          .getElementById('movement-history')
+                          ?.scrollIntoView({ behavior: 'smooth' })
+                      }}
+                    >
+                      History
+                    </button>
+                    {user.role === 'owner' && (
+                      <button className="text-action" onClick={() => setEdit(p.id)}>
+                        Edit
+                      </button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {!products.length && <p className="pos-empty">No matching inventory.</p>}
+      </div>
+      <section className="report-panel" id="movement-history">
+        <header className="operations-heading">
+          <h3>Inventory movement history</h3>
+          <label className="field">
+            Product history
+            <select value={history} onChange={(e) => setHistory(e.target.value)}>
+              <option value="">All products</option>
+              {all.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </header>
+        <div className="data-table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Date / user</th>
+                <th>Product</th>
+                <th>Type / reason</th>
+                <th>Change</th>
+                <th>Before → after</th>
+              </tr>
+            </thead>
+            <tbody>
+              {movements
+                .filter((m) => !history || m.productId === history)
+                .map((m) => (
+                  <tr key={m.id}>
+                    <td>
+                      {new Date(m.createdAt).toLocaleString('en-PH')}
+                      <small>{m.responsibleUser}</small>
+                    </td>
+                    <td>{m.productName}</td>
+                    <td>
+                      {m.type}
+                      <small>{m.reason}</small>
+                      <small>{m.reference}</small>
+                    </td>
+                    <td>
+                      {m.quantity > 0 ? '+' : ''}
+                      {m.quantity}
+                    </td>
+                    <td>
+                      {m.before} → {m.after}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+          {!movements.filter((m) => !history || m.productId === history).length && (
+            <p className="pos-empty">No stock movements yet.</p>
+          )}
+        </div>
+      </section>
+      {adjustment && (
+        <StockAdjustmentModal product={adjustment} actor={user} onClose={() => setAdjust('')} />
+      )}{' '}
+      {creating && <ProductEditModal actor={user} onClose={() => setCreating(false)} />}{' '}
+      {categoriesOpen && <CategoryModal actor={user} onClose={() => setCategoriesOpen(false)} />}{' '}
+      {editing && <ProductEditModal product={editing} actor={user} onClose={() => setEdit('')} />}
+    </div>
+  )
 }

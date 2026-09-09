@@ -7,6 +7,7 @@ export default defineConfig({
   optimizeDeps: { entries: ['index.html'] },
   plugins: [react(), tailwindcss()],
   server: {
+    watch: { ignored: ['**/artifacts/**'] },
     proxy: {
       '/api': process.env.ASCENT_API_TARGET || 'http://localhost:4174',
     },

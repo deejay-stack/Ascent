@@ -1,60 +1,43 @@
-# ASCENT SME Store
+# ASCENT grocery and minimart
 
-ASCENT is a responsive grocery catalog and store workspace built with React, TypeScript, Vite, and a dependency-free Node API.
+React, TypeScript and Vite frontend with two data modes: a working local demonstration and an Express/Prisma integration prepared for Supabase Auth, PostgreSQL, Storage and Realtime.
 
-Phase 1 adds a browser-local POS, 40 grocery products with local illustrations, inventory movements, receipts, payment demonstrations, customer order reservations, calculated dashboards and reports. The existing Node backend still provides authentication and historical orders. New commerce records use a replaceable mock service layer; Supabase integration has not started.
+The application includes 40 grocery products, catalog filters, a stock-aware cart, customer orders, POS cash checkout, payment demonstrations, printable receipts, inventory adjustments, product/category editing, staff account management, editable profiles, store settings and calculated dashboards/reports. Camera barcode scanning starts only on request.
 
 ## Run locally
 
-```bash
-npm install
+```sh
+npm install --legacy-peer-deps
 npm run dev
 ```
 
-The app runs through Vite and proxies `/api` requests to the Node server on port `4174`. For a production-style run:
+Use `npm.cmd` in Windows PowerShell if script execution is disabled. Node 22.21 or later in the supported Node 22 line is used for this project.
 
-```bash
+Local demo accounts: owner@ascent.store, staff@ascent.store and maya@example.com, all with password `ascent-demo`. Local auth and people use server/data.json; mock commerce uses browser storage. These records are separate from Supabase.
+
+```sh
 npm run build
 npm start
 ```
 
-Then open `http://localhost:4174`.
+The production-style local server opens at http://localhost:4174.
 
-## Demo accounts
+## Supabase integration
 
-All seeded accounts use the password `ascent-demo`.
+Follow [the setup and live verification guide](docs/supabase-setup.md). Fill `.env.local`, apply migrations, seed, verify the connection and switch both data-mode variables to supabase. No project credentials are bundled. The app currently stays in mock mode; live Supabase data exchange is pending configuration.
 
-- Owner: `owner@ascent.store`
-- Staff: `staff@ascent.store`
-- Customer: `maya@example.com`
-
-Customer registration is also enabled. Passwords are stored as salted scrypt hashes. The local API keeps its existing accounts, sessions, products and historical orders in `server/data.json`. New shopping and POS operations share browser-local development inventory through `src/services/index.ts`. All localStorage access is isolated in `src/services/storage/mockStorage.ts`.
-
-## Available workflows
-
-- Searchable, filterable, sortable product catalog
-- Product details and stock-aware quantities
-- Persistent cart with pickup or delivery selection
-- Customer registration, sign-in, session restore, sign-out, and recovery request
-- Role-based protected routes for customer, staff, and owner workspaces
-- Authenticated order creation, stock deduction, and customer order history
-- Persisted light/dark mode across public, authentication, catalog, cart, and dashboard views
+GCash, Maya and card controls are payment demonstrations. Real merchant payments require a separate provider integration.
 
 ## Checks
 
-```bash
+```sh
 npm run lint
 npm run build
-```
-
-On Windows PowerShell with script execution disabled, use `npm.cmd` instead of `npm`.
-
-Run the complete browser/service workflow checks with Microsoft Edge installed:
-
-```bash
+npm run db:validate
 npm run verify
 ```
 
-The runner uses separate API/Vite test processes and browser data. Results, screenshots and a print-check PDF are written under `artifacts/phase-1`. Ports 4186 and 5186 must be available. It does not use the existing backend data file.
+The browser suite uses Microsoft Edge, isolated API/Vite processes (ports 4186/5186), mock mode and separate test data. Results, screenshots and receipt PDF are in artifacts/phase-1. It does not modify the existing backend data file.
 
-See [the implementation handoff](docs/phase-1-handoff.md), [file inventory](docs/phase-1-files.md), and [initial inspection](docs/phase-1-audit.md) for scope, limitations, and the exact Phase 2 starting point. Real payments, camera scanning, staff account management and Supabase remain deferred.
+See [current implementation notes](docs/integration-handoff.md). The [Phase 1 audit](docs/phase-1-audit.md), [handoff](docs/phase-1-handoff.md) and [file inventory](docs/phase-1-files.md) describe the earlier milestone.
+

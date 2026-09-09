@@ -1,3 +1,5 @@
+> Historical Phase 1 milestone. See [current integration notes](integration-handoff.md) and [Supabase setup](supabase-setup.md) for work completed after this document.
+
 # ASCENT Phase 1 handoff
 
 ## Scope and architecture

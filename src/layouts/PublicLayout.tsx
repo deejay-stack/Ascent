@@ -9,18 +9,27 @@ import { PublicNavbar } from '../components/navigation/PublicNavbar'
 import { ScrollProgress } from '../components/navigation/ScrollProgress'
 import { AscentLoader } from '../components/loader/AscentLoader'
 import { useInitialLoader } from '../hooks/useInitialLoader'
+import { request } from '../services/api'
 
 export function PublicLayout() {
   const location = useLocation()
   const showLoader = useInitialLoader(location.pathname === '/')
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [isSubscribed, setIsSubscribed] = useState(false)
+  const [newsletterError, setNewsletterError] = useState('')
+  const [subscribing, setSubscribing] = useState(false)
 
-  const handleSubscribe = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubscribe = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!newsletterEmail.includes('@')) return
-    setIsSubscribed(true)
-    setNewsletterEmail('')
+    setSubscribing(true)
+    setNewsletterError('')
+    try {
+      await request('/api/newsletter', {method:'POST',body:JSON.stringify({email:newsletterEmail})})
+      setIsSubscribed(true)
+      setNewsletterEmail('')
+    } catch(error) { setNewsletterError(error instanceof Error?error.message:'Subscription could not be saved.') }
+    finally { setSubscribing(false) }
   }
 
   return (
@@ -45,9 +54,10 @@ export function PublicLayout() {
               <form onSubmit={handleSubscribe}>
                 <label className="sr-only" htmlFor="footer-email">Email address</label>
                 <input id="footer-email" onChange={(event) => setNewsletterEmail(event.target.value)} placeholder="Email address" required type="email" value={newsletterEmail} />
-                <button type="submit">Join <ArrowUpRight size={16} /></button>
+                <button disabled={subscribing} type="submit">{subscribing?'Saving…':'Join'} <ArrowUpRight size={16} /></button>
               </form>
             )}
+            {newsletterError&&<p className="form-error" role="alert">{newsletterError}</p>}
           </div>
           <div><h2>Explore</h2><Link to="/products">Shop</Link><Link to="/#categories">Categories</Link><Link to="/#for-stores">For stores</Link></div>
           <div><h2>Account</h2><Link to="/login">Sign in</Link><Link to="/register">Create account</Link><Link to="/cart">Cart</Link></div>

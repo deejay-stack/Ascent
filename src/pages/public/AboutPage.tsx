@@ -1,0 +1,5 @@
+import { Link } from 'react-router-dom'
+import { ScrollReveal } from '../../animations/ScrollReveal'
+export function AboutPage() {
+  return <div className="catalog-page"><header className="catalog-hero"><p className="eyebrow">About ASCENT</p><h1>Everyday essentials.<br/>One connected store.</h1><p>ASCENT brings neighborhood grocery shopping and daily store operations together.</p></header><ScrollReveal><div className="report-grid"><section className="report-panel"><h2>For your everyday.</h2><p>Find groceries by category, check availability and build a basket. Choose store pickup or local delivery and follow your order from your account.</p><Link className="primary-link" to="/products">Browse groceries</Link></section><section className="report-panel"><h2>For the people behind the counter.</h2><p>Process counter sales, track every stock movement, manage your team and understand sales through a focused workspace.</p><Link className="secondary-link" to="/login">Open your workspace</Link></section></div></ScrollReveal></div>
+}

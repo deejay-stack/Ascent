@@ -1,3 +1,7 @@
+import { PeoplePage } from '../pages/dashboard/PeoplePage'
+import { AboutPage } from '../pages/public/AboutPage'
+import { AuthCallbackPage } from '../pages/public/AuthCallbackPage'
+import { ResetPasswordPage } from '../pages/public/ResetPasswordPage'
 import { PosPage } from '../pages/dashboard/PosPage'
 import { InventoryPage } from '../pages/dashboard/InventoryPage'
 import { ReportsPage } from '../pages/dashboard/ReportsPage'
@@ -14,24 +18,20 @@ import { PublicLayout } from '../layouts/PublicLayout'
 import { StaffLayout } from '../layouts/StaffLayout'
 import { RoleDashboardPage } from '../pages/dashboard/RoleDashboardPage'
 import { CustomerOrdersPage } from '../pages/dashboard/CustomerOrdersPage'
-import { WorkspacePage } from '../pages/dashboard/WorkspacePage'
 import { NotFoundPage } from '../pages/errors/NotFoundPage'
 import { UnauthorizedPage } from '../pages/errors/UnauthorizedPage'
-import { ComingSoonPage } from '../pages/public/ComingSoonPage'
 import { HomePage } from '../pages/public/HomePage'
 import { ProductCatalogPage } from '../pages/public/ProductCatalogPage'
 import { ProductDetailsPage } from '../pages/public/ProductDetailsPage'
 import { CartPage } from '../pages/public/CartPage'
-
-const workspacePage = (title: string, description: string) => (
-  <WorkspacePage description={description} title={title} />
-)
 
 export const appRouter = createBrowserRouter([
   {
     element: <PublicLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: 'auth/callback', element: <AuthCallbackPage /> },
+      { path: 'reset-password', element: <ResetPasswordPage /> },
       {
         path: 'products',
         element: <ProductCatalogPage />,
@@ -42,12 +42,7 @@ export const appRouter = createBrowserRouter([
       },
       {
         path: 'about',
-        element: (
-          <ComingSoonPage
-            description="ASCENT is a focused management and commerce platform for grocery and minimart teams."
-            title="About ASCENT"
-          />
-        ),
+        element: <AboutPage />,
       },
       {
         path: 'cart',
@@ -104,9 +99,10 @@ export const appRouter = createBrowserRouter([
           { path: 'orders', element: <OrdersPage /> },
           { path: 'inventory', element: <InventoryPage /> },
           { path: 'pos', element: <PosPage /> },
-          { path: 'people', element: workspacePage('People', 'Manage customer and staff accounts.') },
+          { path: 'people', element: <PeoplePage /> },
           { path: 'reports', element: <ReportsPage /> },
           { path: 'settings', element: <SettingsPage /> },
+          { path: 'profile', element: <ProfilePage /> },
         ],
       },
     ],

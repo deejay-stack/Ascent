@@ -8,7 +8,9 @@ type WorkspacePageProps = {
 export function WorkspacePage({ title, description }: WorkspacePageProps) {
   return (
     <section className="workspace-page">
-      <span className="workspace-icon"><Construction size={24} /></span>
+      <span className="workspace-icon">
+        <Construction size={24} />
+      </span>
       <p className="eyebrow">Module route ready</p>
       <h2>{title}</h2>
       <p>{description}</p>

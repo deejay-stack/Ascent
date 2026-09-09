@@ -1,3 +1,5 @@
+> Historical Phase 1 milestone. See [current integration notes](integration-handoff.md) and [Supabase setup](supabase-setup.md) for work completed after this document.
+
 # Phase 1 file inventory
 
 Substantive source changes are listed below. Generated builds, test browser profiles, PDFs and screenshots are excluded.

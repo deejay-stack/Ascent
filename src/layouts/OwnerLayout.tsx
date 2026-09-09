@@ -6,6 +6,7 @@ import {
   Settings,
   TrendingUp,
   UsersRound,
+  UserRound,
 } from 'lucide-react'
 import { DashboardShell, type DashboardNavItem } from '../components/navigation/DashboardShell'
 
@@ -17,6 +18,7 @@ const navigation: DashboardNavItem[] = [
   { label: 'People', to: '/owner/people', icon: UsersRound },
   { label: 'Reports', to: '/owner/reports', icon: TrendingUp },
   { label: 'Settings', to: '/owner/settings', icon: Settings },
+  { label: 'Profile', to: '/owner/profile', icon: UserRound },
 ]
 
 export function OwnerLayout() {

@@ -1,3 +1,4 @@
+import { isSupabaseMode } from '../../services/supabaseClient'
 import { Eye, EyeOff } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useMemo, useState } from 'react'
@@ -88,7 +89,7 @@ export function AuthForm({ selectedRole, onRoleChange, initialMode = 'signin' }:
     setIsSubmitting(true)
     try {
       if (mode === 'recover') {
-        setNotice(await recoverPassword(email.trim()))
+        setNotice(isSupabaseMode ? await recoverPassword(email.trim()) : 'Password recovery is a local demonstration. Email delivery is available after Supabase Auth is connected.')
         return
       }
 
@@ -100,7 +101,8 @@ export function AuthForm({ selectedRole, onRoleChange, initialMode = 'signin' }:
       const safeRequestedPath = requestedPath && requestedPath.startsWith('/') ? requestedPath : undefined
       navigate(safeRequestedPath ?? (user.role === 'owner' ? '/owner' : user.role === 'staff' ? '/staff' : '/account'), { replace: true })
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Unable to complete authentication.')
+      if (submitError instanceof Error && submitError.message.startsWith('Account created.')) setNotice(submitError.message)
+      else setError(submitError instanceof Error ? submitError.message : 'Unable to complete authentication.')
     } finally {
       setIsSubmitting(false)
     }

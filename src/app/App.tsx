@@ -4,15 +4,16 @@ import { CartProvider } from '../contexts/CartContext'
 import { ThemeProvider } from '../contexts/ThemeContext'
 import { MotionProvider } from '../animations/MotionProvider'
 import { appRouter } from './router'
+import { CommerceSync } from '../components/CommerceSync'
 
 export function App() {
   return (
     <MotionProvider>
       <ThemeProvider>
         <AuthProvider>
-          <CartProvider>
+          <CommerceSync><CartProvider>
             <RouterProvider router={appRouter} />
-          </CartProvider>
+          </CartProvider></CommerceSync>
         </AuthProvider>
       </ThemeProvider>
     </MotionProvider>

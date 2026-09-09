@@ -1,4 +1,4 @@
-import type { Order, Product } from './product'
+import type { Category, Order, Product } from './product'
 import type { AuthUser } from './auth'
 
 export type CartItem = { productId: string; quantity: number }
@@ -18,6 +18,6 @@ export type InventoryMovement = {
 export type Payment = { id: string; transactionId: string; method: PaymentMethod; total: number; status: 'pending' | 'succeeded' | 'failed' | 'cancelled' }
 export type StoreSettings = { name: string; address: string; taxRate: number }
 export type MockState = {
-  version: 1; products: Product[]; sales: Sale[]; movements: InventoryMovement[]; orders: Order[]; settings: StoreSettings
+  version: 1; products: Product[]; categories: Category[]; sales: Sale[]; movements: InventoryMovement[]; orders: Order[]; settings: StoreSettings
 }
 export type SaleRequest = { transactionId: string; items: CartItem[]; discount: number; taxRate: number; paymentMethod: PaymentMethod; amountReceived: number; paymentId?: string; actor: AuthUser }

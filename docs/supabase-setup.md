@@ -1,5 +1,7 @@
 # Supabase setup and verification
 
+**Historical setup notes.** The project is now split into frontend/backend workspaces and connected to Supabase. Use [live-database-handoff.md](live-database-handoff.md) for current paths, migration commands and verification. The notes below describe the earlier preparation milestone.
+
 Status: the Express/Prisma integration, Auth adapter, Storage upload path and Realtime refresh are implemented. No Supabase project has been configured or modified. Live database migrations and data exchange have not been tested.
 
 ## 1. Configure the project locally
@@ -40,7 +42,9 @@ npm run db:check
 
 The first migration creates the application tables. The second adds database checks, RLS, a customer-only signup trigger and Realtime publication for small store_events records. The Express database connection must have permission to access the application tables despite frontend RLS restrictions. Frontend clients cannot write business tables directly.
 
-The seed creates explicitly configured owner/staff accounts, 12 categories, 40 products, opening stock movements and a public product image bucket. Existing seeded product IDs are skipped so rerunning does not reset stock. Existing matching bootstrap accounts receive the configured role; their password is not reset. The seed does not import browser-local transactions or legacy JSON accounts. Remove bootstrap passwords from the local environment after setup if no longer needed.
+The default seed creates explicitly configured owner/staff accounts, 12 starter categories, store settings and a public product image bucket. It inserts **no products or opening stock**. On a fresh database the owner starts from Inventory, adds or renames categories, and creates available products with prices, photos and opening quantities. The supplied photo library is also available in the product editor.
+
+For a separate demonstration database only, `npm run db:seed -- --demo-catalog` explicitly adds the 40 sample products and their opening movements. The sample image upload uses each file's content type. Existing product IDs are skipped so rerunning does not reset stock. Neither seed mode deletes existing records; a reset of a previously populated database is a separate migration step after reviewing its products, orders, sales and stock history. Existing matching bootstrap accounts receive the configured role; their password is not reset. The seed does not import browser-local transactions or legacy JSON accounts. Remove bootstrap passwords from the local environment after setup if no longer needed.
 
 ## 3. Enable cloud data exchange
 
@@ -53,7 +57,7 @@ VITE_DATA_MODE=supabase
 
 Restart `npm run dev`. For a production build, rebuild with these environment values and run `npm start`. Frontend mode is fixed at build time. The Express API defaults to port 4174. Vite proxies API requests; the production Express server serves dist and /api on the same origin.
 
-Check `/api/health`: it must report mode supabase and database connected. Sign in with the configured owner, not the local demo credentials. Confirm the catalog shows seeded products and the connection indicator recovers after reconnecting.
+Check `/api/health`: it must report mode supabase and database connected. Sign in with the configured owner, not the local demo credentials. Confirm the catalog shows the products entered by the owner (or the empty catalog message before products are added) and the connection indicator recovers after reconnecting. Set `ENABLE_PAYMENT_DEMOS=false` for actual store use; the POS hides simulated methods when the API disables them. Cash is the implemented operational payment method.
 
 ## 4. Verify against the actual project
 
@@ -77,4 +81,3 @@ React -> authenticated Express endpoints -> Prisma transactions -> Supabase Post
 Sales use database transactions with serializable retry and guarded stock updates. POS transaction IDs provide retry protection. Browser mock mode is intended for one-browser demonstration; its commerce records do not synchronize across devices.
 
 Cloud runtime verification remains pending until project credentials are supplied locally. The complete local workflow suite is `npm run verify`; it explicitly forces mock mode and uses isolated data.
-

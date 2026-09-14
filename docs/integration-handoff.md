@@ -1,5 +1,9 @@
 # Current integration handoff
 
+The current connected workspace and tests are documented in [live-database-handoff.md](live-database-handoff.md). The remaining notes describe earlier milestones before the frontend/backend split.
+
+The latest product photo and owner-inventory work is documented in [product-photo-handoff.md](product-photo-handoff.md). It replaces bundled product illustrations, restores deleted components, verifies 110 browser/service checks and changes the default database bootstrap to insert no demo products. The verification and implementation notes below describe the preceding integration milestone.
+
 The latest request authorized Supabase work after the initial local-commerce milestone. Phase 1 documents are historical; camera scanning, people management, profile editing, product/category forms and cloud adapters have since been implemented.
 
 ## Added or completed

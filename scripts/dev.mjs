@@ -4,8 +4,16 @@ import { resolve } from 'node:path'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const node = process.execPath
-const api = spawn(node, ['server/index.mjs'], { cwd: root, stdio: 'inherit' })
-const vite = spawn(node, ['node_modules/vite/bin/vite.js'], { cwd: root, stdio: 'inherit' })
+const api = spawn(node, ['src/index.mjs'], {
+  cwd: resolve(root, 'backend'),
+  stdio: 'inherit',
+  windowsHide: true,
+})
+const vite = spawn(node, [resolve(root, 'node_modules/vite/bin/vite.js')], {
+  cwd: resolve(root, 'frontend'),
+  stdio: 'inherit',
+  windowsHide: true,
+})
 const stop = () => {
   api.kill()
   vite.kill()

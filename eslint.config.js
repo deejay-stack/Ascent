@@ -6,7 +6,23 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'artifacts']),
+  globalIgnores(['**/dist/**', 'artifacts/**']),
+  {
+    files: [
+      'backend/**/*.mjs',
+      'scripts/**/*.mjs',
+      'frontend/tests/**/*.mjs',
+      'frontend/scripts/**/*.mjs',
+    ],
+    extends: [js.configs.recommended],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+    rules: {
+      'no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', caughtErrors: 'none', varsIgnorePattern: '^_' },
+      ],
+    },
+  },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

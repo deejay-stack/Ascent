@@ -16,8 +16,9 @@ const check = (name, value) => {
 }
 try {
   check(
-    'Backend defaults to Supabase with payment demonstrations disabled',
-    process.env.ASCENT_DATA_MODE === 'supabase' && process.env.ENABLE_PAYMENT_DEMOS === 'false',
+    'Backend uses Supabase with an explicit payment demonstration setting',
+    process.env.ASCENT_DATA_MODE === 'supabase' &&
+      ['true', 'false'].includes(process.env.ENABLE_PAYMENT_DEMOS),
   )
   server = spawn(process.execPath, [resolve(projectDir, 'backend/src/index.mjs')], {
     env: { ...process.env, PORT: '4192' },
@@ -69,7 +70,9 @@ try {
         body: Buffer.from(JSON.stringify({ message: 'Temporary test outage' })).toString('base64'),
       })
   })
-  await publicPage.call('Fetch.enable', { patterns: [{ urlPattern: '*/api/snapshot' }] })
+  await publicPage.call('Fetch.enable', {
+    patterns: [{ urlPattern: '*/api/snapshot' }],
+  })
   await publicPage.evaluate('window.dispatchEvent(new Event("focus"))')
   await publicPage.until('document.body.textContent.includes("Connection interrupted")')
   check(

@@ -20,10 +20,10 @@ if (missing.length) {
     const { supabaseAdmin } = await import('../src/supabase.mjs')
     await db.$queryRaw`SELECT 1`
     const tables =
-      await db.$queryRaw`SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public' AND tablename IN ('products','categories','sales','sale_items','payments','orders','order_items','inventory_movements','profiles','store_events','store_settings','newsletter_subscriptions','carts','cart_items','cart_mutations')`
-    if (tables.length !== 15 || tables.some((t) => !t.rowsecurity))
+      await db.$queryRaw`SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public' AND tablename IN ('products','categories','sales','sale_items','payments','orders','order_items','inventory_movements','profiles','store_events','store_settings','newsletter_subscriptions','carts','cart_items','cart_mutations','order_events','notifications','payment_webhooks')`
+    if (tables.length !== 18 || tables.some((t) => !t.rowsecurity))
       throw new Error(
-        'Apply all database migrations; all 15 application tables must have RLS enabled.',
+        'Apply all database migrations; all 18 application tables must have RLS enabled.',
       )
     const { error } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1 })
     if (error) throw new Error('The Supabase server key could not authenticate.')
@@ -39,7 +39,7 @@ if (missing.length) {
     )
       throw new Error('Frontend and backend Supabase URLs must match.')
     console.log(
-      'Verified: PostgreSQL connection, all 15 application tables/RLS, Supabase Auth admin access, matching frontend configuration, and product Storage bucket.',
+      'Verified: PostgreSQL connection, all 18 application tables/RLS, Supabase Auth admin access, matching frontend configuration, and product Storage bucket.',
     )
     const published =
       await db.$queryRaw`SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'store_events'`

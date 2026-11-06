@@ -15,18 +15,36 @@ export function ReportsPage() {
     [payment, setPayment] = useState(''),
     [source, setSource] = useState(''),
     [receipt, setReceipt] = useState<Sale | null>(null)
+  const [includeDemo, setIncludeDemo] = useState(false)
   if (!user) return null
-  const report = reportService.get(user, { from, to, payment, source })
+  const report = reportService.get(user, {
+    from,
+    to,
+    payment,
+    source,
+    includeDemo,
+  })
   return (
     <div className="operations-page">
       <header className="operations-heading">
         <div>
           <p className="eyebrow">Business overview</p>
           <h2>Sales & reports</h2>
-          <p>Completed transactions only. Unpaid orders are excluded.</p>
+          <p>
+            Paid transactions only. Unpaid orders are excluded. Demo payments are excluded unless
+            selected below.
+          </p>
         </div>
       </header>
       <div className="table-filters">
+        <label className="checkbox-field">
+          <input
+            type="checkbox"
+            checked={includeDemo}
+            onChange={(e) => setIncludeDemo(e.target.checked)}
+          />
+          Include demo payments
+        </label>
         <label className="field">
           From date
           <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
@@ -39,7 +57,7 @@ export function ReportsPage() {
           Payment method
           <select value={payment} onChange={(e) => setPayment(e.target.value)}>
             <option value="">All methods</option>
-            {['cash', 'gcash', 'maya', 'card'].map((p) => (
+            {['cash', 'gcash', 'maya', 'paypal', 'qrph', 'card'].map((p) => (
               <option key={p} value={p}>
                 {p.toUpperCase()}
               </option>
@@ -61,6 +79,7 @@ export function ReportsPage() {
             setTo('')
             setPayment('')
             setSource('')
+            setIncludeDemo(false)
           }}
         >
           Clear filters
@@ -96,7 +115,10 @@ export function ReportsPage() {
           rows={report.performance
             .filter((p) => p.quantity > 0)
             .slice(0, 5)
-            .map((p) => ({ name: `${p.name} (${p.quantity} sold)`, value: p.revenue }))}
+            .map((p) => ({
+              name: `${p.name} (${p.quantity} sold)`,
+              value: p.revenue,
+            }))}
         />
       </div>
       <section className="report-panel">

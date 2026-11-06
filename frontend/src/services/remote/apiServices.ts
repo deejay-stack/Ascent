@@ -7,8 +7,10 @@ import type { CartItem, Payment, Sale, StoreSettings } from '../../types/commerc
 import type { CatalogProduct, Order } from '../../types/product'
 import type { ProductInput } from '../products/productManagementService'
 import { remoteCache, remoteWrite } from './cache'
-import { request } from '../api'
-import { mockStorage } from '../storage/mockStorage'
+import { ApiError, request } from '../api'
+import { retryConnectionOnce } from '../http'
+import type { CheckoutDetails } from '../checkout'
+import { readCheckoutAttempt, recoverPendingCheckout, saveCheckoutAttempt } from '../checkoutRecovery'
 import { summarize, localDay, type ReportFilter } from '../reports/reportService'
 function products(query: ProductQuery = {}): CatalogProduct[] {
   const state = remoteCache.get(),
@@ -75,7 +77,8 @@ export const apiInventoryService: InventoryService = {
   movements: () => remoteCache.get().movements,
   async adjust({ actor, ...input }) {
     void actor
-    await remoteWrite('/api/inventory/adjustments', input)
+    const command = { ...input, requestId: input.requestId || crypto.randomUUID() }
+    await retryConnectionOnce(() => remoteWrite('/api/inventory/adjustments', command))
   },
   async updateProduct(id, fields) {
     await remoteWrite('/api/products/' + encodeURIComponent(id), fields, 'PATCH')
@@ -114,24 +117,52 @@ export const apiOrderService = {
     void _actor
     return remoteCache.get().orders
   },
-  async create(items: CartItem[], fulfillment: 'pickup' | 'delivery', _actor: AuthUser) {
-    const key = 'ascent-checkout-request-' + _actor.id
-    const signature = JSON.stringify({ items, fulfillment })
-    const previous = mockStorage.read<{ signature: string; orderId: string } | null>(key, null)
-    const orderId = previous?.signature === signature ? previous.orderId : 'ORD-' + crypto.randomUUID()
-    mockStorage.write(key, { signature, orderId })
-    const result = await remoteWrite<{ order: Order }>('/api/orders', {
+  async create(
+    items: CartItem[],
+    fulfillment: 'pickup' | 'delivery',
+    _actor: AuthUser,
+    checkout: CheckoutDetails,
+  ) {
+    // Resolve an uncertain previous submission before accepting another basket.
+    const recovered = await recoverPendingCheckout(_actor.id)
+    if (recovered) return { order: recovered }
+    const cartVersion = remoteCache.get().cart.version
+    const signature = JSON.stringify({
       items,
       fulfillment,
-      orderId,
+      ...checkout,
+      cartVersion,
     })
-    mockStorage.remove(key)
+    // Keep retry references in IndexedDB so a full localStorage cannot block checkout.
+    const previous = await readCheckoutAttempt(_actor.id)
+    const orderId =
+      previous?.signature === signature ? previous.orderId : 'ORD-' + crypto.randomUUID()
+    const attempt = { signature, orderId, pending: true }
+    await saveCheckoutAttempt(_actor.id, attempt)
+    let result: { order: Order }
+    try {
+      result = await remoteWrite<{ order: Order }>('/api/orders', {
+        items, fulfillment, orderId, cartVersion, ...checkout,
+      })
+    } catch (error) {
+      if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+        await saveCheckoutAttempt(_actor.id, { ...attempt, pending: false }).catch(() => undefined)
+        throw error
+      }
+      const accepted = await recoverPendingCheckout(_actor.id).catch(() => null)
+      if (!accepted) throw error
+      result = { order: accepted }
+    }
+    await saveCheckoutAttempt(_actor.id, { ...attempt, pending: false }).catch(() => undefined)
+    // Retain the reference for lost responses. A new cart version starts a new order.
     return result
   },
-  async settle(id: string, _actor: AuthUser) {
+  async settle(id: string, _actor: AuthUser, amountReceived?: number) {
     void _actor
     return (
-      await remoteWrite<{ sale: Sale }>('/api/orders/' + encodeURIComponent(id) + '/settle', {})
+      await remoteWrite<{ sale: Sale }>('/api/orders/' + encodeURIComponent(id) + '/settle', {
+        amountReceived,
+      })
     ).sale
   },
   async cancel(id: string, _actor: AuthUser) {
@@ -147,15 +178,20 @@ export const apiSettingsService = {
   },
 }
 export const apiProductManagementService = {
-  async save(id: string | null, input: ProductInput, _actor: AuthUser) {
+  async save(
+    id: string | null,
+    input: ProductInput,
+    _actor: AuthUser,
+    requestId = crypto.randomUUID(),
+  ) {
     void _actor
-    return (
-      await remoteWrite<{ product: ProductInput }>(
+    const save = () =>
+      remoteWrite<{ product: ProductInput }>(
         '/api/products' + (id ? '/' + encodeURIComponent(id) : ''),
-        input,
+        id ? input : { ...input, requestId },
         id ? 'PATCH' : 'POST',
       )
-    ).product
+    return (await (id ? save() : retryConnectionOnce(save))).product
   },
   async saveCategory(id: string | null, name: string, _actor: AuthUser) {
     void _actor
@@ -172,10 +208,19 @@ export const apiProductManagementService = {
 }
 export const apiUploadService = {
   async productImage(file: File) {
+    if (
+      !['image/png', 'image/jpeg', 'image/webp'].includes(file.type) ||
+      file.size > 2 * 1024 * 1024
+    )
+      throw new Error('Choose a PNG, JPEG or WebP image up to 2 MB.')
     const body = new FormData()
     body.append('image', file)
-    return (await request<{ imageUrl: string }>('/api/uploads/product', { method: 'POST', body }))
-      .imageUrl
+    return (
+      await request<{ imageUrl: string }>('/api/uploads/product', {
+        method: 'POST',
+        body,
+      })
+    ).imageUrl
   },
 }
 export const apiReportService = {
@@ -184,6 +229,7 @@ export const apiReportService = {
     const state = remoteCache.get()
     const sales = state.sales.filter(
       (s) =>
+        (filter.includeDemo || !s.isDemo) &&
         (!filter.from || localDay(s.createdAt) >= filter.from) &&
         (!filter.to || localDay(s.createdAt) <= filter.to) &&
         (!filter.payment || s.paymentMethod === filter.payment) &&

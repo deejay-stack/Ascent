@@ -99,9 +99,49 @@ try {
   await management.field('Barcode', String(Date.now()))
   await management.field('Opening stock', '12')
   await management.field('Choose a supplied photo', '/images/products/staples/jasmine_rice.jpg')
+  let saveAttempts = 0,
+    droppedProductId,
+    saveInjectionError
+  management.onEvent((event) => {
+    if (event.method !== 'Fetch.requestPaused') return
+    void (async () => {
+      if (++saveAttempts === 1) {
+        // Commit to the real database, then simulate losing the response in transit.
+        const response = await fetch(origin + '/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + owner.token },
+          body: event.params.request.postData,
+        })
+        if (response.status !== 201)
+          throw new Error('Initial product save did not commit: ' + response.status)
+        droppedProductId = (await response.json()).product.id
+        await management.call('Fetch.failRequest', {
+          requestId: event.params.requestId,
+          errorReason: 'ConnectionReset',
+        })
+      } else {
+        await management.call('Fetch.continueRequest', { requestId: event.params.requestId })
+      }
+    })().catch((error) => {
+      saveInjectionError = error.message
+    })
+  })
+  await management.call('Fetch.enable', {
+    patterns: [{ urlPattern: '*/api/products', requestStage: 'Request' }],
+  })
   await management.button('Create product')
-  await management.until('!document.querySelector("dialog[open]")')
+  await management.until('!document.querySelector("dialog[open]")', 60000)
+  await management.call('Fetch.disable')
   const product = await db.product.findFirst({ where: { categoryId: category.id } })
+  check(
+    'Product save recovers automatically after a committed response is lost',
+    !saveInjectionError && saveAttempts === 2 && product?.id === droppedProductId,
+  )
+  check(
+    'Product save retry creates exactly one product and one opening-stock movement',
+    (await db.product.count({ where: { categoryId: category.id } })) === 1 &&
+      (await db.inventoryMovement.count({ where: { productId: product.id } })) === 1,
+  )
   check(
     'Product form persists photo, price and opening stock',
     product?.stockQuantity === 12 && Number(product.sellingPrice) === 25,
@@ -120,7 +160,7 @@ try {
   await shopping.navigate('/cart')
   await shopping.until('document.querySelectorAll(".cart-line").length===1')
   await shopping.until(
-    'document.querySelector(".order-summary .button").textContent==="Place order"',
+    'document.querySelector(".order-summary .button").textContent==="Review order"',
   )
   check(
     'Customer cart form writes its item to PostgreSQL',
@@ -139,8 +179,11 @@ try {
     15000,
   )
   check('Realtime updates the cart in the second session', true)
-  await shopping.button('Place order')
-  await shopping.until('!!document.querySelector(".checkout-success")', 40000)
+  await shopping.field('Contact number', '09123456789')
+  await shopping.click('input[name="paymentMethod"][value="cash"]')
+  await shopping.button('Review order')
+  await shopping.button('Confirm order — pay at counter')
+  await shopping.until('!!document.querySelector(".order-detail-page")', 40000)
   const order = await db.order.findFirst({
     where: { userId: customer.id },
     include: { items: true },
@@ -154,8 +197,14 @@ try {
   check('Checkout clears the cart across sessions', true)
   await management.navigate('/owner/orders')
   await management.until(`document.body.textContent.includes(${JSON.stringify(order.id)})`)
-  await management.button('Record payment / fulfill')
-  await management.button('Confirm exact cash received')
+  const orderButton = async (label) => {
+    const expression = `(()=>{const row=document.querySelector('[data-order-id="${order.id}"]');return [...(row?.querySelectorAll('button')||[])].find(b=>b.textContent.trim()===${JSON.stringify(label)}&&!b.disabled)})()`
+    await management.until(`!!${expression}`)
+    await management.evaluate(`${expression}.click()`)
+  }
+  await orderButton('Receive counter payment')
+  await management.field('Cash received', '50')
+  await management.button('Confirm cash received')
   await management.until('!!document.querySelector("#print-receipt")', 40000)
   const sale = await db.sale.findUnique({
     where: { orderId: order.id },
@@ -166,6 +215,10 @@ try {
     Number(sale?.total) === 50 && sale.payment.status === 'succeeded',
   )
   await management.screenshot('order-receipt')
+  await management.click('[aria-label="Close Receipt"]')
+  await orderButton('Start preparing')
+  await orderButton('Mark ready for pickup')
+  await orderButton('Complete order')
   await shopping.navigate('/account/orders')
   await shopping.until('document.body.textContent.includes("Completed")')
   check('Customer order history reflects fulfillment', true)
@@ -190,10 +243,11 @@ try {
   check('Database-backed receipt prints to PDF', pdf.data.length > 5000)
   await management.navigate('/owner/reports')
   await management.until('!!document.querySelector(".compact-stats")')
+  const revenue = Number((await db.sale.aggregate({ where: { isDemo: false }, _sum: { total: true } }))._sum.total || 0)
   check(
     'Reports calculate totals from database sales',
     await management.evaluate(
-      'document.querySelector(".compact-stats").textContent.includes("75.00")',
+      `document.querySelector(".compact-stats").textContent.includes(${JSON.stringify(revenue.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))})`,
     ),
   )
   await management.navigate('/owner/inventory')
@@ -239,6 +293,7 @@ try {
     (await db.profile.findUnique({ where: { id: owner.id } })).name.endsWith('Updated Owner'),
   )
   await management.navigate('/owner/settings')
+  if (process.env.ASCENT_TEST_STORE_SETTINGS === 'true') {
   await management.field('Store name', fixture.run + ' Store')
   await management.field('Store address', 'System test address')
   await management.button('Save settings')
@@ -247,6 +302,10 @@ try {
     'Settings form persists shared store preferences',
     (await db.storeSettings.findUnique({ where: { id: 'store' } })).name === fixture.run + ' Store',
   )
+  } else {
+    await management.until('!!document.querySelector(".operation-form")')
+    check('Settings form loads without changing existing store preferences', true)
+  }
   await management.navigate('/owner/people')
   await management.button('Create staff account')
   const newEmail = fixture.run + '-created-staff@example.com'
@@ -255,7 +314,9 @@ try {
   await management.field('Initial password', staff.password)
   await management.button('Create staff')
   await management.until('!document.querySelector("dialog[open]")', 40000)
-  const createdStaff = await db.profile.findFirst({ where: { email: newEmail, authDeletedAt: null } })
+  const createdStaff = await db.profile.findFirst({
+    where: { email: newEmail, authDeletedAt: null },
+  })
   check(
     'People form creates a Supabase staff account',
     createdStaff?.role === 'staff' && createdStaff.isActive,
@@ -267,7 +328,8 @@ try {
   )
   check(
     'People access control persists the disabled status',
-    (await db.profile.findFirst({ where: { email: newEmail, authDeletedAt: null } })).isActive === false,
+    (await db.profile.findFirst({ where: { email: newEmail, authDeletedAt: null } })).isActive ===
+      false,
   )
   const staffPage = await browser.page('staff')
   await staffPage.login(staff)

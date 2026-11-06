@@ -14,6 +14,7 @@ import { ThemeToggle } from '../ThemeToggle'
 import { useAuth } from '../../hooks/useAuth'
 import { useAppTheme } from '../../hooks/useAppTheme'
 import { roleLabels, type UserRole } from '../../types/roles'
+import { OrderNotifications } from './OrderNotifications'
 
 export type DashboardNavItem = {
   label: string
@@ -125,6 +126,7 @@ export function DashboardShell({ role, navigation }: DashboardShellProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <OrderNotifications />
             <ThemeToggle onToggle={toggleTheme} theme={theme} />
             <div className="user-chip">
               <span>{user?.name.charAt(0)}</span>

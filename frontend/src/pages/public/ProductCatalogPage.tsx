@@ -58,7 +58,7 @@ export function ProductCatalogPage() {
     if (value) next.set(key, value)
     else next.delete(key)
     if (key !== 'limit') next.delete('limit')
-    setParams(next, { replace: true })
+    setParams(next, { replace: true, preventScrollReset: true })
   }
   const filters = (
     <div className="catalog-filter-fields">
@@ -97,7 +97,7 @@ export function ProductCatalogPage() {
         />
         Featured only
       </label>
-      <button className="text-action" onClick={() => setParams({})}>
+      <button className="text-action" onClick={() => setParams({}, { preventScrollReset: true })}>
         Clear filters
       </button>
     </div>
@@ -203,7 +203,7 @@ export function ProductCatalogPage() {
               : 'Products will appear here as the store adds its available inventory.'}
           </p>
           {allProducts.length > 0 && (
-            <button className="button button-secondary" onClick={() => setParams({})}>
+            <button className="button button-secondary" onClick={() => setParams({}, { preventScrollReset: true })}>
               Clear filters
             </button>
           )}

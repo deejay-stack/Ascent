@@ -6,6 +6,17 @@ export class ApiError extends Error {
   }
 }
 
+// Call only for operations with a server-enforced retry identity.
+export async function retryConnectionOnce<T>(operation: () => Promise<T>): Promise<T> {
+  try {
+    return await operation()
+  } catch (error) {
+    if (!(error instanceof ApiError) || ![502, 503, 504].includes(error.status)) throw error
+    await new Promise((resolve) => setTimeout(resolve, 400))
+    return operation()
+  }
+}
+
 export async function fetchJson<T>(path: string, options: RequestInit = {}): Promise<T> {
   let response: Response
   try {

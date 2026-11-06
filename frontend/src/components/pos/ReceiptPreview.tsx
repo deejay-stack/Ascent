@@ -15,9 +15,9 @@ export function ReceiptPreview({
 }) {
   const receiptLabel = !isSupabaseMode
     ? 'DEVELOPMENT RECEIPT'
-    : sale.paymentMethod === 'cash'
-      ? 'SALES RECEIPT'
-      : 'DEMONSTRATION PAYMENT RECEIPT'
+    : sale.isDemo
+      ? 'DEMONSTRATION PAYMENT RECEIPT'
+      : 'SALES RECEIPT'
   const defaults = settingsService.get()
   const settings = {
     name: sale.storeName ?? defaults.name,
@@ -109,7 +109,7 @@ export function ReceiptPreview({
         </dl>
         <p>
           Payment: {sale.paymentMethod.toUpperCase()}
-          {sale.paymentMethod !== 'cash' ? ' (simulated)' : ''}
+          {sale.isDemo ? ' (simulated)' : ''}
         </p>
         <footer>
           <p>Thank you for shopping with ASCENT!</p>

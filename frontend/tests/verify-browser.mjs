@@ -286,10 +286,13 @@ try {
   await until('location.pathname==="/cart" || location.pathname==="/account"')
   if (await evaluate('location.pathname!=="/cart"')) await navigate('/cart')
   await until(
-    '[...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Place order")',
+    '[...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Review order")',
   )
-  await button('Place order')
-  await until('!!document.querySelector(".checkout-success")')
+  await evaluate(`(()=>{const input=document.querySelector('input[autocomplete="tel"]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,'09123456789');input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('input[value="cash"]').click()})()`)
+  await button('Review order')
+  await until('!!document.querySelector("dialog[open]")')
+  await button('Confirm order — pay at counter')
+  await until('!!document.querySelector(".order-detail-page")')
   check('Customer checkout confirms order', true)
   await navigate('/account/orders')
   await until('document.body.textContent.includes("Awaiting payment")')

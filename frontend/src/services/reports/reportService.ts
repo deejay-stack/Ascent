@@ -4,7 +4,7 @@ import { getState, requireOperator } from '../mockStore'
 import { cents } from '../money'
 export const localDay = (value: string | Date) =>
   new Date(value).toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' })
-export type ReportFilter = { from?: string; to?: string; payment?: string; source?: string }
+export type ReportFilter = { from?: string; to?: string; payment?: string; source?: string; includeDemo?: boolean }
 export function summarize(
   sales: Sale[],
   products = getState().products,
@@ -58,6 +58,7 @@ export const reportService = {
     const sales = getState()
       .sales.filter(
         (s) =>
+          (filter.includeDemo || !s.isDemo) &&
           (!filter.from || localDay(s.createdAt) >= filter.from) &&
           (!filter.to || localDay(s.createdAt) <= filter.to) &&
           (!filter.payment || s.paymentMethod === filter.payment) &&

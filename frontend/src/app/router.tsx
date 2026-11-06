@@ -8,7 +8,7 @@ import { ReportsPage } from '../pages/dashboard/ReportsPage'
 import { OrdersPage } from '../pages/dashboard/OrdersPage'
 import { SettingsPage } from '../pages/dashboard/SettingsPage'
 import { ProfilePage } from '../pages/dashboard/ProfilePage'
-import { createBrowserRouter, Outlet } from 'react-router-dom'
+import { createBrowserRouter, Outlet, ScrollRestoration } from 'react-router-dom'
 import { CommerceSync } from '../components/CommerceSync'
 import { CartProvider } from '../contexts/CartContext'
 import { GuestRoute } from '../components/auth/GuestRoute'
@@ -20,18 +20,21 @@ import { PublicLayout } from '../layouts/PublicLayout'
 import { StaffLayout } from '../layouts/StaffLayout'
 import { RoleDashboardPage } from '../pages/dashboard/RoleDashboardPage'
 import { CustomerOrdersPage } from '../pages/dashboard/CustomerOrdersPage'
+import { OrderDetailsPage } from '../pages/dashboard/OrderDetailsPage'
 import { NotFoundPage } from '../pages/errors/NotFoundPage'
 import { UnauthorizedPage } from '../pages/errors/UnauthorizedPage'
 import { HomePage } from '../pages/public/HomePage'
 import { ProductCatalogPage } from '../pages/public/ProductCatalogPage'
 import { ProductDetailsPage } from '../pages/public/ProductDetailsPage'
 import { CartPage } from '../pages/public/CartPage'
+import { CheckoutPaymentPage } from '../pages/public/CheckoutPaymentPage'
 
 export const appRouter = createBrowserRouter([
   {
     element: (
       <CommerceSync>
         <CartProvider>
+          <ScrollRestoration />
           <Outlet />
         </CartProvider>
       </CommerceSync>
@@ -43,6 +46,9 @@ export const appRouter = createBrowserRouter([
           { index: true, element: <HomePage /> },
           { path: 'auth/callback', element: <AuthCallbackPage /> },
           { path: 'reset-password', element: <ResetPasswordPage /> },
+          { element: <ProtectedRoute allowedRoles={['customer']} />, children: [
+            { path: 'checkout/:orderId', element: <CheckoutPaymentPage /> },
+          ] },
           {
             path: 'products',
             element: <ProductCatalogPage />,
@@ -81,6 +87,7 @@ export const appRouter = createBrowserRouter([
             children: [
               { index: true, element: <RoleDashboardPage role="customer" /> },
               { path: 'orders', element: <CustomerOrdersPage /> },
+              { path: 'orders/:orderId', element: <OrderDetailsPage /> },
               { path: 'profile', element: <ProfilePage /> },
             ],
           },
@@ -95,6 +102,7 @@ export const appRouter = createBrowserRouter([
             children: [
               { index: true, element: <RoleDashboardPage role="staff" /> },
               { path: 'orders', element: <OrdersPage /> },
+              { path: 'orders/:orderId', element: <OrderDetailsPage /> },
               { path: 'inventory', element: <InventoryPage /> },
               { path: 'pos', element: <PosPage /> },
               { path: 'profile', element: <ProfilePage /> },
@@ -111,6 +119,7 @@ export const appRouter = createBrowserRouter([
             children: [
               { index: true, element: <RoleDashboardPage role="owner" /> },
               { path: 'orders', element: <OrdersPage /> },
+              { path: 'orders/:orderId', element: <OrderDetailsPage /> },
               { path: 'inventory', element: <InventoryPage /> },
               { path: 'pos', element: <PosPage /> },
               { path: 'people', element: <PeoplePage /> },

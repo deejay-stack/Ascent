@@ -1,6 +1,16 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { saleInput, items, mergeItems, totals, productInput } from '../src/validation.mjs'
+import { saleInput, items, mergeItems, totals, productInput, validateSaleRetry } from '../src/validation.mjs'
+
+test('sale retry accepts equivalent baskets and rejects changed contents, tender or cashier', () => {
+  const actor = { id: 'staff-1' }
+  const original = { items: [{ productId: 'rice', quantity: 2 }], paymentMethod: 'cash', discount: 0, taxRate: 12, amountReceived: 100 }
+  const sale = { ...original, source: 'pos', cashierId: actor.id, subtotal: 50, tax: 6, paymentId: 'cash-1' }
+  validateSaleRetry(sale, { ...original, items: [{ productId: 'rice', quantity: 1 }, { productId: 'rice', quantity: 1 }] }, actor)
+  for (const patch of [{ items: [{ productId: 'rice', quantity: 3 }] }, { amountReceived: 101 }, { discount: 1 }, { taxRate: 0 }, { paymentMethod: 'gcash' }])
+    assert.throws(() => validateSaleRetry(sale, { ...original, ...patch }, actor), { status: 409 })
+  assert.throws(() => validateSaleRetry(sale, original, { id: 'staff-2' }), { status: 409 })
+})
 
 test('sale input rejects invalid quantities, negative amounts and unrecognized methods', () => {
   const sale = {

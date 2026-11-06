@@ -2,6 +2,7 @@ import type { AuthUser } from '../../types/auth'
 import type { InventoryMovement } from '../../types/commerce'
 import type { Product } from '../../types/product'
 export type Adjustment = {
+  requestId?: string
   productId: string
   type: 'stock-in' | 'stock-out' | 'adjustment'
   quantity: number

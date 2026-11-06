@@ -1,56 +1,314 @@
-import { ArrowLeft, CheckCircle2, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ProductVisual } from '../../components/catalog/ProductVisual'
 import { useAuth } from '../../hooks/useAuth'
 import { useCart } from '../../hooks/useCart'
-import { useProducts } from '../../hooks/useProducts'
+import { useProducts, useCommerceRevision } from '../../hooks/useProducts'
 import { orderService } from '../../services'
-import { cents } from '../../services/money'
-import type { Order, CatalogProduct as Product } from '../../types/product'
+import { cents, money } from '../../services/money'
+import type { CatalogProduct as Product } from '../../types/product'
 import { isSupabaseMode } from '../../services/supabaseClient'
-
-const peso = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' })
+import { remoteCache } from '../../services/remote/cache'
+import { methodLabels, type CheckoutMethod, type CheckoutOption } from '../../services/checkout'
+import { PaymentMark } from '../../components/checkout/PaymentMark'
+import { Modal } from '../../components/ui/Modal'
+import { orderDestination, recoverPendingCheckout } from '../../services/checkoutRecovery'
 
 export function CartPage() {
   const { items, setQuantity, removeItem, clearCart, isSyncing, error: cartError } = useCart()
   const { user } = useAuth()
   const products = useProducts()
+  useCommerceRevision()
   const [fulfillment, setFulfillment] = useState<'pickup' | 'delivery'>('pickup')
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
-  const [completedOrder, setCompletedOrder] = useState<Order | null>(null)
+  const [method, setMethod] = useState<CheckoutMethod | ''>('')
+  const [name, setName] = useState<string | undefined>(),
+    [phone, setPhone] = useState(''),
+    [address, setAddress] = useState('')
+  const [submitting, setSubmitting] = useState(false),
+    [review, setReview] = useState(false),
+    [error, setError] = useState('')
   const navigate = useNavigate()
-
-  const lines = useMemo(() => items.map((item) => ({ ...item, product: products.find((product) => product.id === item.productId) })).filter((line): line is typeof line & { product: Product } => Boolean(line.product)), [items, products])
-  const subtotal = lines.reduce((sum, line) => sum + cents(line.product.price) * line.quantity, 0) / 100
-
-  const checkout = async () => {
-    if (submitting || isSyncing || cartError) return
-    if (!user) { navigate('/login', { state: { from: '/cart' } }); return }
-    if (user.role !== 'customer') { setError('Checkout is available from a customer account.'); return }
-    setSubmitting(true); setError('')
-    try {
-      const result = await orderService.create(items, fulfillment, user)
-      setCompletedOrder(result.order)
-      if (!isSupabaseMode) clearCart()
-    } catch (checkoutError) {
-      setError(checkoutError instanceof Error ? checkoutError.message : 'Checkout could not be completed.')
-    } finally { setSubmitting(false) }
+  const submitLock = useRef(false)
+  useEffect(() => {
+    if (!isSupabaseMode || !user?.id) return
+    let active = true
+    void recoverPendingCheckout(user.id).then((order) => {
+      if (active && order) navigate(orderDestination(order), { replace: true })
+    }).catch(() => {
+      if (active) setError('A previous checkout could not be checked. Reconnect and reload this page before placing another order.')
+    })
+    return () => { active = false }
+  }, [user?.id, navigate])
+  const lines = useMemo(
+    () =>
+      items
+        .map((item) => ({ ...item, product: products.find((p) => p.id === item.productId) }))
+        .filter((line): line is typeof line & { product: Product } => Boolean(line.product)),
+    [items, products],
+  )
+  const total =
+    lines.reduce((sum, line) => sum + cents(line.product.price) * line.quantity, 0) / 100
+  const methods: CheckoutOption[] = isSupabaseMode
+    ? remoteCache.get().checkoutMethods
+    : [
+        {
+          id: 'cash',
+          label: 'Over the counter',
+          available: true,
+          isDemo: false,
+          description: 'Pay cash at the store.',
+        },
+      ]
+  const reviewOrder = (event: FormEvent) => {
+    event.preventDefault()
+    if (!user) {
+      navigate('/login', { state: { from: '/cart' } })
+      return
+    }
+    if (user.role !== 'customer') {
+      setError('Checkout requires a customer account.')
+      return
+    }
+    if (!method || isSyncing || cartError) return
+    setError('')
+    setReview(true)
   }
-
-  if (completedOrder) return <section className="checkout-success"><CheckCircle2 size={52} /><p className="eyebrow">Order confirmed</p><h1>Thanks, {user?.name.split(' ')[0]}.</h1><p>Your order <strong>{completedOrder.id}</strong> is now processing for {completedOrder.fulfillment.toLowerCase()}.</p><div><Link className="primary-link" to="/account/orders">Track order</Link><Link className="secondary-link" to="/products">Keep shopping</Link></div></section>
-
+  const checkout = async () => {
+    if (!user || !method || submitLock.current || isSyncing || cartError) return
+    submitLock.current = true
+    setSubmitting(true)
+    setError('')
+    try {
+      const { order } = await orderService.create(items, fulfillment, user, {
+        paymentMethod: method,
+        confirmed: true,
+        contactName: name ?? user.name,
+        contactPhone: phone,
+        deliveryAddress: fulfillment === 'delivery' ? address : '',
+        expectedTotal: total,
+      })
+      if (!isSupabaseMode) clearCart()
+      setReview(false)
+      navigate(orderDestination(order))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Checkout could not be completed.')
+    } finally {
+      submitLock.current = false
+      setSubmitting(false)
+    }
+  }
   return (
     <div className="cart-page">
-      <header className="cart-header"><div><p className="eyebrow">Your basket</p><h1>Review your cart.</h1></div><Link className="details-back" to="/products"><ArrowLeft size={17} /> Continue shopping</Link></header>
-      {!items.length ? <section className="empty-cart"><ShoppingBag size={48} /><h2>Your cart is empty.</h2><p>Explore the catalog and add your everyday essentials.</p><Link className="primary-link" to="/products">Browse products</Link></section> : (
+      <header className="cart-header">
+        <div>
+          <p className="eyebrow">Your basket</p>
+          <h1>Review your cart.</h1>
+        </div>
+        <Link className="details-back" to="/products">
+          <ArrowLeft size={17} /> Continue shopping
+        </Link>
+      </header>
+      {error && <p className="form-error" role="alert">{error}</p>}
+      {!items.length ? (
+        <section className="empty-cart">
+          <ShoppingBag size={48} />
+          <h2>Your cart is empty.</h2>
+          <Link className="primary-link" to="/products">
+            Browse products
+          </Link>
+        </section>
+      ) : (
         <div className="cart-layout">
           <section className="cart-lines" aria-label="Cart items">
-            {lines.map(({ product, quantity }) => <article className="cart-line" key={product.id}><ProductVisual compact product={product} /><div className="cart-line-copy"><p>{product.category}</p><Link to={`/products/${product.id}`}>{product.name}</Link><small>{peso.format(product.price)} / {product.unit}</small></div><div className="quantity-control"><button aria-label={`Decrease ${product.name}`} disabled={submitting || isSyncing} onClick={() => setQuantity(product.id, quantity - 1)} type="button"><Minus size={16} /></button><span>{quantity}</span><button aria-label={`Increase ${product.name}`} disabled={submitting || isSyncing || quantity >= product.stock} onClick={() => setQuantity(product.id, quantity + 1)} type="button"><Plus size={16} /></button></div><strong>{peso.format(product.price * quantity)}</strong><button aria-label={`Remove ${product.name}`} disabled={submitting || isSyncing} className="remove-line" onClick={() => removeItem(product.id)} type="button"><Trash2 size={18} /></button></article>)}
+            {lines.map(({ product, quantity }) => (
+              <article className="cart-line" key={product.id}>
+                <ProductVisual compact product={product} />
+                <div className="cart-line-copy">
+                  <p>{product.category}</p>
+                  <Link to={'/products/' + product.id}>{product.name}</Link>
+                  <small>
+                    {money(product.price)} / {product.unit}
+                  </small>
+                </div>
+                <div className="quantity-control">
+                  <button
+                    aria-label={'Decrease ' + product.name}
+                    disabled={submitting || review || isSyncing}
+                    onClick={() => setQuantity(product.id, quantity - 1)}
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <span>{quantity}</span>
+                  <button
+                    aria-label={'Increase ' + product.name}
+                    disabled={submitting || review || isSyncing || quantity >= product.stock}
+                    onClick={() => setQuantity(product.id, quantity + 1)}
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+                <strong>{money(product.price * quantity)}</strong>
+                <button
+                  aria-label={'Remove ' + product.name}
+                  disabled={submitting || review || isSyncing}
+                  className="remove-line"
+                  onClick={() => removeItem(product.id)}
+                >
+                  <Trash2 size={18} />
+                </button>
+              </article>
+            ))}
           </section>
-          <aside className="order-summary"><p className="eyebrow">Order summary</p><h2>{items.reduce((sum, item) => sum + item.quantity, 0)} items</h2><div className="fulfillment-options"><label className={fulfillment === 'pickup' ? 'is-active' : ''}><input checked={fulfillment === 'pickup'} name="fulfillment" onChange={() => setFulfillment('pickup')} type="radio" /><span><strong>Store pickup</strong><small>Ready-time shown after confirmation</small></span></label><label className={fulfillment === 'delivery' ? 'is-active' : ''}><input checked={fulfillment === 'delivery'} name="fulfillment" onChange={() => setFulfillment('delivery')} type="radio" /><span><strong>Local delivery</strong><small>Delivery fee confirmed by the store</small></span></label></div><div className="summary-total"><span>Subtotal</span><strong>{peso.format(subtotal)}</strong></div><p className="summary-note">No card details are collected. Payment is arranged at pickup or delivery.</p>{error && <p className="form-error" role="alert">{error}</p>}<button className="button button-primary" disabled={submitting || isSyncing || !!cartError || !lines.length} onClick={checkout} type="button">{submitting ? 'Placing order...' : isSyncing ? 'Saving cart...' : user ? 'Place order' : 'Sign in to checkout'}</button></aside>
+          <form className="order-summary checkout-summary" onSubmit={reviewOrder}>
+            <p className="eyebrow">Checkout</p>
+            <h2>Delivery & payment</h2>
+            <label className="field">
+              Fulfillment
+              <select
+                value={fulfillment}
+                onChange={(e) => {
+                  setFulfillment(e.target.value as 'pickup' | 'delivery')
+                  if (e.target.value === 'pickup' && method === 'cod') setMethod('')
+                }}
+              >
+                <option value="pickup">Store pickup</option>
+                <option value="delivery">Local delivery</option>
+              </select>
+            </label>
+            <label className="field">
+              Contact name
+              <input
+                required
+                minLength={2}
+                maxLength={100}
+                autoComplete="name"
+                value={name ?? user?.name ?? ''}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
+            <label className="field">
+              Contact number
+              <input
+                required
+                type="tel"
+                minLength={7}
+                maxLength={30}
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </label>
+            {fulfillment === 'delivery' && (
+              <label className="field">
+                Delivery address
+                <textarea
+                  required
+                  minLength={10}
+                  maxLength={500}
+                  autoComplete="street-address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </label>
+            )}
+            <fieldset className="payment-options">
+              <legend>Choose a payment method</legend>
+              {methods.map((option) => (
+                <label
+                  key={option.id}
+                  className={'payment-option ' + (method === option.id ? 'is-selected' : '')}
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={option.id}
+                    required
+                    checked={method === option.id}
+                    disabled={!option.available || (option.id === 'cod' && fulfillment !== 'delivery')}
+                    onChange={() => setMethod(option.id)}
+                  />
+                  <PaymentMark method={option.id} />
+                  <span>
+                    <strong>{option.label}</strong>
+                    <small>{option.description}</small>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+            <div className="summary-total">
+              <span>Total</span>
+              <strong>{money(total)}</strong>
+            </div>
+            <p className="summary-note">
+              Review and confirm before your order is placed. No additional delivery charge is
+              collected in this demo.
+            </p>
+            {(error || cartError) && (
+              <p className="form-error" role="alert">
+                {error || cartError}
+              </p>
+            )}
+            <button
+              className="button button-primary"
+              disabled={submitting || isSyncing || !!cartError || !lines.length}
+              type={user ? 'submit' : 'button'}
+              onClick={() => {
+                if (!user) navigate('/login', { state: { from: '/cart' } })
+              }}
+            >
+              {isSyncing ? 'Saving cart...' : user ? 'Review order' : 'Sign in to checkout'}
+            </button>
+          </form>
         </div>
+      )}
+      {review && method && (
+        <Modal
+          title="Confirm your order"
+          onClose={() => {
+            if (!submitting) setReview(false)
+          }}
+        >
+          <div className="operation-form">
+            <p>
+              {lines.reduce((n, l) => n + l.quantity, 0)} items ·{' '}
+              {fulfillment === 'pickup' ? 'Store pickup' : 'Local delivery'}
+            </p>
+            <p>
+              {name ?? user?.name} · {phone}
+            </p>
+            {fulfillment === 'delivery' && <p>{address}</p>}
+            <p>
+              <strong>{methodLabels[method]}</strong>
+            </p>
+            <h3>Total: {money(total)}</h3>
+            <p>
+              {method === 'cod'
+                ? 'Pay cash on delivery. Staff records collection when the order is delivered.'
+                : method === 'cash'
+                ? 'Your order will wait for staff to confirm cash received at the counter.'
+                : 'Next: demo wallet checkout. No real money will be collected.'}
+            </p>
+            {error && (
+              <p role="alert" className="form-error">
+                {error}
+              </p>
+            )}
+            <button
+              className="button button-primary"
+              disabled={submitting}
+              onClick={() => void checkout()}
+            >
+              {submitting
+                ? 'Confirming...'
+                : method === 'cod'
+                  ? 'Confirm order — cash on delivery'
+                : method === 'cash'
+                  ? 'Confirm order — pay at counter'
+                  : 'Confirm order and continue to payment'}
+            </button>
+          </div>
+        </Modal>
       )}
     </div>
   )

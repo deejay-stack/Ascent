@@ -38,4 +38,10 @@ export type Order = {
   items: OrderLine[]
   subtotal: number
   total: number
+  paymentMethod?: 'cash' | 'cod' | 'gcash' | 'maya' | 'paypal' | 'qrph'
+  contactName?: string
+  contactPhone?: string
+  deliveryAddress?: string
+  payment?: { id: string; status: string; total: number; isDemo: boolean; provider: string; reference?: string | null } | null
+  events?: { id: string; message: string; actor: string; createdAt: string }[]
 }

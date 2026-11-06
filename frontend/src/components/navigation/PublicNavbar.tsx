@@ -84,7 +84,9 @@ export function PublicNavbar() {
   useEffect(() => {
     if (!location.hash || location.pathname !== '/') return
     window.requestAnimationFrame(() => {
-      const target = document.querySelector<HTMLElement>(location.hash)
+      let id = location.hash.slice(1)
+      try { id = decodeURIComponent(id) } catch { /* Ignore malformed URL encoding. */ }
+      const target = document.getElementById(id)
       if (!target) return
       const isFullBleed = ['#overview', '#how-it-works'].includes(location.hash)
       window.scrollTo({ top: target.offsetTop - (isFullBleed ? 0 : 68), behavior: 'smooth' })

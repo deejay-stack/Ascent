@@ -2,12 +2,12 @@ import type { Category, Order, Product } from './product'
 import type { AuthUser } from './auth'
 
 export type CartItem = { productId: string; quantity: number }
-export type PaymentMethod = 'cash' | 'gcash' | 'maya' | 'card'
+export type PaymentMethod = 'cash' | 'gcash' | 'maya' | 'card' | 'paypal' | 'qrph'
 export type SaleItem = { productId: string; name: string; categoryId: string; unit: string; imageUrl: string; quantity: number; unitPrice: number; total: number }
 export type Totals = { subtotal: number; discount: number; tax: number; total: number }
 export type Sale = Totals & {
   storeName: string; storeAddress: string
-  id: string; receiptNumber: string; createdAt: string; cashier: string; cashierId: string
+  id: string; receiptNumber: string; createdAt: string; cashier: string; cashierId: string | null; isDemo?: boolean
   source: 'pos' | 'online'; items: SaleItem[]; paymentMethod: PaymentMethod
   amountReceived: number; change: number; paymentId: string
 }

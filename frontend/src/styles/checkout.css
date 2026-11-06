@@ -1,0 +1,248 @@
+.checkout-summary {
+  display: grid;
+  gap: 16px;
+}
+.checkout-summary .field {
+  margin: 0;
+}
+.payment-options {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.payment-options legend {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border, #d9e1e0);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+.payment-option.is-selected {
+  border-color: #087d65;
+  box-shadow: 0 0 0 1px #087d65;
+  background: rgba(8, 125, 101, 0.07);
+}
+.payment-option:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.payment-option input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  accent-color: #087d65;
+}
+.payment-option strong,
+.payment-option small {
+  display: block;
+}
+.payment-option small {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.75;
+}
+.payment-mark {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f0f5f5;
+  color: #126b59;
+}
+.payment-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: white;
+}
+.wallet-checkout {
+  max-width: 580px;
+  margin: 48px auto;
+  padding: 0 20px;
+}
+.wallet-card {
+  border: 1px solid var(--border, #d9e1e0);
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 0 28px 24px;
+  margin-top: 22px;
+  box-shadow: 0 14px 45px #00000009;
+}
+.demo-payment-banner {
+  margin: 0 -28px 28px;
+  padding: 12px 18px;
+  background: #fff1c9;
+  color: #634400;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+.wallet-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.wallet-heading .payment-mark {
+  width: 60px;
+  height: 60px;
+  flex-basis: 60px;
+}
+.wallet-heading h1 {
+  font-size: 29px;
+  margin: 0;
+}
+.wallet-amount {
+  font-size: clamp(32px, 6vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin: 14px 0;
+}
+.wallet-card > p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 12px 0;
+}
+.wallet-actions {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0;
+}
+.wallet-actions .button {
+  width: 100%;
+}
+.payment-state,
+.wallet-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wallet-footer {
+  opacity: 0.65;
+  font-size: 12px !important;
+  margin-top: 24px !important;
+}
+.payment-result {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+.payment-result svg {
+  color: #087d65;
+}
+.order-payment-summary {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 16px 0;
+}
+.order-payment-summary p {
+  margin: 3px 0;
+  font-size: 13px;
+}
+.order-timeline {
+  border-top: 1px solid var(--border, #d9e1e0);
+  padding-top: 16px;
+  margin-top: 20px;
+}
+.order-timeline summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.order-timeline ol {
+  display: grid;
+  gap: 12px;
+  padding: 16px 0 0 18px;
+}
+.order-timeline li,
+.order-timeline small {
+  display: block;
+}
+.order-timeline small {
+  opacity: 0.65;
+  font-size: 11px;
+  margin-top: 4px;
+}
+.order-notifications {
+  position: relative;
+}
+.notification-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border, #d9e1e0);
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.notification-toggle span {
+  background: #087d65;
+  color: white;
+  border-radius: 15px;
+  padding: 1px 6px;
+  font-size: 11px;
+}
+.notification-panel {
+  position: absolute;
+  right: 0;
+  top: 48px;
+  width: min(350px, 85vw);
+  max-height: 450px;
+  overflow: auto;
+  background: var(--surface, white);
+  border: 1px solid var(--border, #d9e1e0);
+  box-shadow: 0 16px 45px #0002;
+  border-radius: 16px;
+  padding: 16px;
+  z-index: 70;
+}
+.notification-panel h3 {
+  margin-bottom: 10px;
+}
+.notification-panel a {
+  display: block;
+  padding: 12px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.notification-panel a.is-unread {
+  background: #087d6512;
+}
+.notification-panel small {
+  display: block;
+  opacity: 0.65;
+  font-size: 10px;
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .wallet-checkout {
+    margin-top: 24px;
+  }
+  .wallet-card {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .demo-payment-banner {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+}

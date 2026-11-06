@@ -19,6 +19,8 @@ test('live Supabase API integration', { timeout: 600000 }, async (t) => {
   })
   const origin = `http://127.0.0.1:${server.address().port}`
   const api = async (path, actor, body, method = body === undefined ? 'GET' : 'POST') => {
+    if (path === '/api/orders' && body) body = { paymentMethod: 'cash', confirmed: true,
+      contactName: actor.name, contactPhone: '09123456789', deliveryAddress: 'Test delivery address, Manila', ...body }
     const response = await fetch(origin + path, {
       method,
       headers: {
@@ -81,6 +83,44 @@ test('live Supabase API integration', { timeout: 600000 }, async (t) => {
       assert.equal(movement.quantity, 20)
       assert.equal(movement.actorId, owner.id)
     })
+    await check(
+      'concurrent product retries create one product and never repeat opening stock',
+      async () => {
+        const input = {
+          ...product,
+          name: fixture.run + ' Retry product',
+          sku: fixture.run.toUpperCase() + '-RETRY',
+          barcode: String(Date.now()),
+          requestId: randomUUID(),
+        }
+        const results = await Promise.all([
+          api('/api/products', owner, input),
+          api('/api/products', owner, input),
+        ])
+        assert.deepEqual(
+          results.map((r) => r.status),
+          [201, 201],
+        )
+        const saved = results[0].body.product
+        assert.equal(saved.id, results[1].body.product.id)
+        assert.equal(await db.product.count({ where: { sku: input.sku } }), 1)
+        assert.equal(await db.inventoryMovement.count({ where: { productId: saved.id } }), 1)
+        await api('/api/inventory/adjustments', staff, {
+          productId: saved.id,
+          type: 'stock-out',
+          quantity: 1,
+          reason: 'Test stock removal',
+          reference: '',
+        })
+        assert.equal((await api('/api/products', owner, input)).body.product.stockQuantity, 19)
+        assert.equal(await db.inventoryMovement.count({ where: { productId: saved.id } }), 2)
+        assert.equal((await api('/api/products', staff, input)).status, 403)
+        assert.equal(
+          (await api('/api/products', owner, { ...input, requestId: randomUUID() })).status,
+          409,
+        )
+      },
+    )
     await check('catalog and staff snapshots hide cost prices and private records', async () => {
       const guest = (await api('/api/snapshot')).body
       assert.ok(guest.products.some((p) => p.id === product.id))
@@ -223,7 +263,7 @@ test('live Supabase API integration', { timeout: 600000 }, async (t) => {
         assert.equal(result.body.sale.total, 50)
         assert.equal(result.body.sale.paymentMethod, 'cash')
         assert.equal((await db.product.findUnique({ where: { id: product.id } })).stockQuantity, 18)
-        assert.equal((await api('/api/orders/' + order.id + '/settle', staff, {})).status, 409)
+        assert.equal((await api('/api/orders/' + order.id + '/settle', staff, {})).status, 200)
         assert.equal(await db.sale.count({ where: { orderId: order.id } }), 1)
       },
     )
@@ -240,7 +280,7 @@ test('live Supabase API integration', { timeout: 600000 }, async (t) => {
       )
       assert.equal(
         (await api('/api/orders/' + result.body.order.id + '/cancel', owner, {})).status,
-        409,
+        200,
       )
       assert.equal((await db.product.findUnique({ where: { id: product.id } })).stockQuantity, 18)
     })
@@ -327,6 +367,28 @@ test('live Supabase API integration', { timeout: 600000 }, async (t) => {
       assert.equal((await db.product.findUnique({ where: { id: product.id } })).stockQuantity, 0)
     })
     await check(
+      'oversized images and malformed requests report useful errors without stopping the API',
+      async () => {
+        const form = new FormData()
+        form.append(
+          'image',
+          new Blob([new Uint8Array(2 * 1024 * 1024 + 1)], { type: 'image/jpeg' }),
+          'large.jpg',
+        )
+        const upload = await api('/api/uploads/product', owner, form)
+        assert.equal(upload.status, 413)
+        assert.match(upload.body.message, /2 MB/)
+        const invalid = await fetch(origin + '/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{invalid',
+        })
+        assert.equal(invalid.status, 400)
+        assert.match((await invalid.json()).message, /JSON/)
+        assert.equal((await api('/api/health')).status, 200)
+      },
+    )
+    await check(
       'product photos upload to Storage and retain the correct content type',
       async () => {
         const form = new FormData()
@@ -372,6 +434,7 @@ test('live Supabase API integration', { timeout: 600000 }, async (t) => {
           200,
         )
         assert.equal((await api('/api/me', customer)).body.user.name, fixture.run + ' Changed')
+        if (process.env.ASCENT_TEST_STORE_SETTINGS === 'true') {
         assert.equal(
           (
             await api(
@@ -384,6 +447,9 @@ test('live Supabase API integration', { timeout: 600000 }, async (t) => {
           200,
         )
         assert.equal((await api('/api/snapshot', owner)).body.settings.name, fixture.run + ' store')
+        } else {
+          assert.ok((await api('/api/snapshot', owner)).body.settings.name)
+        }
         assert.equal(
           (await api('/api/newsletter', null, { email: fixture.run + '-newsletter@example.com' }))
             .status,

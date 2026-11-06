@@ -40,13 +40,14 @@ export function ProductEditModal({
   }))
   const [error, setError] = useState(''),
     [busy, setBusy] = useState(false)
+  const [requestId] = useState(() => crypto.randomUUID())
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     if (busy) return
     setBusy(true)
     setError('')
     try {
-      await productManagementService.save(product?.id ?? null, form, actor)
+      await productManagementService.save(product?.id ?? null, form, actor, requestId)
       onClose()
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Product could not be saved.')

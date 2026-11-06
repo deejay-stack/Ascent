@@ -5,6 +5,7 @@ import type { AuthUser } from '../types/auth'
 import type { Order } from '../types/product'
 import type { UserRole } from '../types/roles'
 import { ApiError, fetchJson } from './http'
+import { apiUrl } from './apiUrl'
 export { ApiError } from './http'
 
 const tokenKey = 'ascent-session-token'
@@ -13,7 +14,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
   const token = isSupabaseMode
     ? (await requireSupabase().auth.getSession()).data.session?.access_token
     : mockStorage.getText(tokenKey)
-  return fetchJson<T>(path, {
+  return fetchJson<T>(apiUrl(path, import.meta.env.VITE_API_URL), {
     ...options,
     headers: {
       ...(options.body && !(options.body instanceof FormData)

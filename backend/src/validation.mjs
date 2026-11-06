@@ -61,3 +61,16 @@ export function mergeItems(lines) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([productId, quantity]) => ({ productId, quantity }))
 }
+
+export function validateSaleRetry(sale, input, actor) {
+  const same = sale.cashierId === actor.id && sale.source === 'pos' &&
+    sale.paymentMethod === input.paymentMethod &&
+    JSON.stringify(mergeItems(sale.items)) === JSON.stringify(mergeItems(input.items)) &&
+    cents(sale.discount) === cents(input.discount) &&
+    cents(sale.tax) === Math.round((cents(sale.subtotal) - cents(sale.discount)) * input.taxRate / 100) &&
+    (input.paymentMethod === 'cash'
+      ? cents(sale.amountReceived) === cents(input.amountReceived)
+      : sale.paymentId === input.paymentId)
+  if (!same) fail(409, 'Transaction reference already used with different sale details.')
+  return sale
+}

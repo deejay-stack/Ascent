@@ -63,7 +63,7 @@ This version stores one business per database. It has no tenant isolation for un
 
 Run the mutating integration/auth/system test suites against development or staging. Although their uniquely named records are cleaned up, some suites temporarily modify settings; they are not intended to run during real trading. The startup test is read-only but requires the configured operator passwords to match their current Auth passwords.
 
-Cash workflows are implemented. GCash, Maya and card demonstrations remain disabled by `ENABLE_PAYMENT_DEMOS=false`; collecting those payments requires a real merchant provider integration. Printer/scanner hardware, email delivery, hosting and backup recovery must be verified for each deployed business. Passing development tests does not substitute for that deployment acceptance.
+Cash workflows are implemented. Digital payment demonstrations are currently enabled locally for the requested customer checkout preview. Set `ENABLE_PAYMENT_DEMOS=false` before normal store operation. See [demo checkout](demo-checkout.md) for the payment and fulfillment flow and merchant credential templates; real collection still requires provider integration. Printer/scanner hardware, email delivery, hosting and backup recovery must be verified for each deployed business. Passing development tests does not substitute for that deployment acceptance.
 
 ## Transfer the hosted installation as well as app access
 

@@ -3,9 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": { "node": "22.x" },
   "scripts": {
     "dev": "node --watch src/index.mjs",
     "start": "node src/index.mjs",
+    "build": "prisma generate",
+    "check:auth": "node scripts/check-auth.mjs",
+    "owner:restore": "node scripts/restore-owner.mjs",
     "test:unit": "node --test tests/*.test.mjs",
     "test:integration": "node --test --test-concurrency=1 tests/integration/*.test.mjs",
     "db:validate": "prisma validate",

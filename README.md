@@ -14,6 +14,10 @@ React/TypeScript frontend and Express/Prisma backend connected to Supabase Postg
 
 The root `package.json` coordinates npm workspaces. Each application has its own package and environment file; npm shares installed dependencies under root `node_modules/`.
 
+Deploy this repository as separate Vercel frontend and Express backend projects using the settings, environment variables and verification steps in [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md). Local development continues to use the Vite `/api` proxy. Production uses `VITE_API_URL` and the backend's explicit `APP_URL` CORS allowlist.
+
+[November 6 deployment validation and owner recovery](docs/vercel-validation-2026-11-06.md) records the restored original admin account, production browser checks and deployment preparation results; it supersedes the earlier audit's missing-owner limitation.
+
 Product visuals use 37 supplied JPG/JPEG photos. Coffee, bottled water and rubbing alcohol use a neutral placeholder until a photo is selected or uploaded. Old browser catalogs receive the new image paths without resetting business records. `npm run seed:catalog` regenerates only demo catalog data and preserves supplied image files.
 
 ## Run locally
@@ -38,15 +42,21 @@ The production-style local server opens at http://localhost:4174.
 
 Public browser configuration belongs in `frontend/.env.local`; server keys, database access and bootstrap accounts belong in `backend/.env.local`. See the corresponding `.env.example` files and [current database handoff](docs/live-database-handoff.md).
 
-The database has 15 application tables. Signed-in customer carts persist across devices. Orders reserve stock and clear the cart transactionally; cash settlement produces a payment, sale and receipt without a second stock deduction. Reports derive from stored sales and inventory records.
+The database has 18 application tables. Signed-in customer carts persist across devices. Customers select payment, review details, and explicitly confirm orders before stock is reserved. Counter/digital payment confirmation creates a sale and receipt without another stock deduction; staff then prepares and fulfills the order. Cash-on-delivery orders stay unpaid through preparation and delivery, and staff records cash collection to complete them. In-app notifications keep customers and staff updated.
 
 Real users register at `/register`. Staff/admin access requires owner approval in People. [Account registration and email setup](docs/real-accounts.md) describes credentials, approvals, connection recovery and the required Supabase SMTP configuration.
 
 [Business accounts and handover](docs/business-handover.md) covers the provisioned owner/staff logins, password changes, replacing operators, and installing or transferring the system to a business.
 
-GCash, Maya and card are test demonstrations, disabled for normal store operation with `ENABLE_PAYMENT_DEMOS=false`. Merchant payment collection still requires a payment provider. Camera scanning starts only on request.
+[Product saves and connection recovery](docs/product-save-recovery.md) explains safe product retries, upload limits, outage handling and how to collect diagnostics for connection resets.
+
+GCash, Maya / PayMaya, PayPal, and QR Ph / digital bank checkout are clearly labeled demos, enabled locally with `ENABLE_PAYMENT_DEMOS=true`. Cash is confirmed by staff. Reports exclude demo payments by default. Set the flag to `false` to disable digital demonstrations. Merchant credential templates do not yet activate real provider collection. See [demo checkout and deployment limits](docs/demo-checkout.md). Camera scanning starts only on request.
 
 ## Checks
+
+See the [November 6 system audit](docs/system-audit-2026-11-06.md) for the latest fixes, executed tests, and live account limitations. Run `npm run test:navigation` for isolated scroll/history browser regression checks. Live suites preserve shared store settings unless `ASCENT_TEST_STORE_SETTINGS=true` is explicitly enabled for an isolated development store.
+
+See the [project review and completion plan](docs/project-completion-plan.md) for the October 12, 2026 assessment, remaining business workflows, prioritized implementation stages, and release acceptance criteria.
 
 ```sh
 npm run lint
@@ -55,11 +65,12 @@ npm run db:validate
 npm run test:unit
 npm run test:integration
 npm run test:system
+npm run test:checkout
 npm run test:startup
 npm run verify
 ```
 
-Unit tests run without network access. Integration tests exercise the configured Supabase project through the API. System tests use Microsoft Edge and isolated API/Vite processes (4190/5190) against Supabase. Live tests create uniquely named fixtures and remove those fixtures afterward; use a development project when rerunning them. Reports are saved under `artifacts/integration/` and `artifacts/system/`.
+Unit tests need no Supabase connection and include local HTTP connection-failure checks. Integration tests exercise the configured Supabase project through the API. System tests use Microsoft Edge and isolated API/Vite processes (4190/5190) against Supabase. Live tests create uniquely named fixtures and remove those fixtures afterward; use a development project when rerunning them. Reports are saved under `artifacts/integration/` and `artifacts/system/`.
 
 After building, `npm run test:startup` verifies the production build and the configured owner/staff logins on port 4192, without creating business records.
 

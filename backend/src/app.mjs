@@ -9,16 +9,24 @@ import { db, transaction } from './db.mjs'
 import { frontendDir } from './env.mjs'
 import { supabaseAdmin } from './supabase.mjs'
 import { optionalAuth, roles } from './auth.mjs'
-import { amount, items, productInput, saleInput, fail } from './validation.mjs'
+import { amount, productInput, saleInput, fail } from './validation.mjs'
 import { cartAction } from './cart-rules.mjs'
 import { setAccountActive } from './account-access.mjs'
+import { createProduct } from './products.mjs'
+import { apiError } from './api-errors.mjs'
+import { cors, frontendOrigins } from './cors.mjs'
+import {
+  createOrder,
+  settleOrder,
+  cancelOrder,
+  progressOrder,
+  simulateOrderPayment,
+} from './orders.mjs'
+import { checkoutInput, checkoutOptions } from './checkout-rules.mjs'
 import { changeCart, readCart } from './cart.mjs'
 import {
   snapshot,
   completeSale,
-  createOrder,
-  settleOrder,
-  cancelOrder,
   emit,
   numericProduct,
   numericOrder,
@@ -26,8 +34,17 @@ import {
 } from './commerce.mjs'
 
 export const app = express()
+export default app
+if (process.env.VERCEL) {
+  if (process.env.ASCENT_DATA_MODE !== 'supabase')
+    throw new Error('Vercel requires ASCENT_DATA_MODE=supabase; local demo files are not persistent.')
+  app.set('trust proxy', 1)
+}
 app.disable('x-powered-by')
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }))
+app.use('/api', cors(frontendOrigins(process.env.APP_URL, !!process.env.VERCEL), {
+  allowSameOrigin: !process.env.VERCEL,
+}))
 app.use(express.json({ limit: '1mb' }))
 app.use(
   '/api',
@@ -39,6 +56,14 @@ app.get('/api/health', async (_req, res) => {
 })
 app.use('/api', optionalAuth)
 app.get('/api/snapshot', async (req, res) => res.json(await snapshot(req.actor)))
+app.get('/api/checkout/options', (_req, res) => res.json({ methods: checkoutOptions() }))
+app.patch('/api/notifications/:id/read', roles(), async (req, res) => {
+  await db.notification.updateMany({
+    where: { id: req.params.id, userId: req.actor.id },
+    data: { readAt: new Date() },
+  })
+  res.json({ ok: true })
+})
 app.get('/api/cart', roles('customer'), async (req, res) => res.json(await readCart(req.actor.id)))
 app.post('/api/cart/actions', roles('customer'), async (req, res) =>
   res.json(await changeCart(cartAction.parse(req.body), req.actor)),
@@ -113,31 +138,10 @@ app.post('/api/people/:id/access-request', roles('owner'), async (req, res) => {
   res.json({ user })
 })
 app.post('/api/products', roles('owner'), async (req, res) => {
-  const input = productInput.parse(req.body)
-  const product = await transaction(async (tx) => {
-    const p = await tx.product.create({
-      data: {
-        ...input,
-        slug: input.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + randomUUID().slice(0, 8),
-      },
-    })
-    if (p.stockQuantity)
-      await tx.inventoryMovement.create({
-        data: {
-          productId: p.id,
-          productName: p.name,
-          type: 'stock-in',
-          quantity: p.stockQuantity,
-          before: 0,
-          after: p.stockQuantity,
-          reason: 'Opening stock for new product',
-          responsibleUser: req.actor.name,
-          actorId: req.actor.id,
-        },
-      })
-    await emit(tx)
-    return p
-  })
+  const { requestId, ...input } = productInput
+    .extend({ requestId: z.uuid().optional() })
+    .parse(req.body)
+  const product = await createProduct(input, req.actor, requestId)
   res.status(201).json({ product: numericProduct(product) })
 })
 app.patch('/api/products/:id', roles('owner'), async (req, res) => {
@@ -185,10 +189,22 @@ app.post('/api/inventory/adjustments', roles('owner', 'staff'), async (req, res)
       type: z.enum(['stock-in', 'stock-out', 'adjustment']),
       quantity: z.number().int().nonnegative().max(1000000),
       reason: z.string().trim().min(2).max(500),
+      requestId: z.uuid().optional(),
     })
     .parse(req.body)
   if (input.type !== 'adjustment' && !input.quantity) fail(400, 'Quantity must be positive.')
   await transaction(async (tx) => {
+    const reference = input.requestId ? 'ADJ-' + input.requestId : null
+    if (reference) {
+      const previous = await tx.inventoryMovement.findFirst({ where: { reference } })
+      if (previous) {
+        const same = previous.actorId === req.actor.id && previous.productId === input.productId &&
+          previous.type === input.type && previous.reason === input.reason &&
+          (input.type === 'adjustment' ? previous.after === input.quantity : Math.abs(previous.quantity) === input.quantity)
+        if (!same) fail(409, 'Adjustment reference already used with different details.')
+        return
+      }
+    }
     const p = await tx.product.findUnique({ where: { id: input.productId } })
     if (!p) fail(404, 'Product not found.')
     const after =
@@ -213,6 +229,7 @@ app.post('/api/inventory/adjustments', roles('owner', 'staff'), async (req, res)
         reason: input.reason,
         responsibleUser: req.actor.name,
         actorId: req.actor.id,
+        reference,
       },
     })
     await emit(tx)
@@ -255,29 +272,67 @@ app.get('/api/orders', roles(), async (req, res) =>
       (
         await db.order.findMany({
           where: req.actor.role === 'customer' ? { userId: req.actor.id } : {},
-          include: { items: true },
+          include: { items: true, payment: true, events: { orderBy: { createdAt: 'asc' } } },
           orderBy: { createdAt: 'desc' },
         })
       ).map(numericOrder),
     ),
   }),
 )
-app.post('/api/orders', roles('customer'), async (req, res) => {
-  const input = z
-    .object({
-      items,
-      fulfillment: z.enum(['pickup', 'delivery']),
-      orderId: z.string().min(8).max(100),
-    })
-    .parse(req.body)
-  res
-    .status(201)
-    .json({ order: await createOrder(input.items, input.fulfillment, req.actor, input.orderId) })
+app.get('/api/orders/:id', roles(), async (req, res) => {
+  const order = await db.order.findUnique({
+    where: { id: req.params.id },
+    include: { items: true, payment: true, events: { orderBy: { createdAt: 'asc' } } },
+  })
+  if (!order || (req.actor.role === 'customer' && order.userId !== req.actor.id))
+    fail(404, 'Order not found.')
+  res.json({ order: serialize(numericOrder(order)) })
 })
-app.post('/api/orders/:id/settle', roles('owner', 'staff'), async (req, res) =>
-  res.json({ sale: await settleOrder(req.params.id, req.actor) }),
-)
-app.post('/api/orders/:id/cancel', roles('owner', 'staff'), async (req, res) => {
+app.post('/api/orders', roles('customer'), async (req, res) => {
+  const input = checkoutInput.parse(req.body)
+  res.status(201).json({ order: await createOrder(input, req.actor) })
+})
+app.post('/api/orders/:id/settle', roles('owner', 'staff'), async (req, res) => {
+  const input = z.object({ amountReceived: amount.optional() }).parse(req.body || {})
+  res.json({ sale: await settleOrder(req.params.id, req.actor, input.amountReceived) })
+})
+app.post('/api/orders/:id/demo-payment', roles('customer'), async (req, res) => {
+  const { outcome, eventId } = z
+    .object({ outcome: z.enum(['succeeded', 'failed', 'pending']), eventId: z.uuid() })
+    .parse(req.body)
+  res.json({ order: await simulateOrderPayment(req.params.id, req.actor, outcome, eventId) })
+})
+app.post('/api/orders/:id/progress', roles('owner', 'staff'), async (req, res) => {
+  const { status } = z
+    .object({ status: z.enum(['Preparing', 'Ready for pickup', 'Out for delivery', 'Completed']) })
+    .parse(req.body)
+  res.json({ order: await progressOrder(req.params.id, req.actor, status) })
+})
+app.get('/api/orders/:id/receipt', roles(), async (req, res) => {
+  const sale = await db.sale.findUnique({
+    where: { orderId: req.params.id },
+    include: { items: true, order: true },
+  })
+  if (!sale || (req.actor.role === 'customer' && sale.order?.userId !== req.actor.id))
+    fail(404, 'Receipt not found.')
+  res.json({
+    sale: serialize({
+      ...sale,
+      total: Number(sale.total),
+      subtotal: Number(sale.subtotal),
+      discount: Number(sale.discount),
+      tax: Number(sale.tax),
+      amountReceived: Number(sale.amountReceived),
+      change: Number(sale.change),
+      items: sale.items.map((l) => ({
+        ...l,
+        unitPrice: Number(l.unitPrice),
+        total: Number(l.total),
+      })),
+    }),
+  })
+})
+app.post('/api/orders/:id/cancel', roles('owner', 'staff', 'customer'), async (req, res) => {
   await cancelOrder(req.params.id, req.actor)
   res.json({ ok: true })
 })
@@ -332,38 +387,30 @@ app.post('/api/newsletter', rateLimit({ windowMs: 60000, limit: 5 }), async (req
   res.json({ message: 'Your subscription has been saved.' })
 })
 app.use('/api', (_req, res) => res.status(404).json({ message: 'API route not found.' }))
-app.use(express.static(resolve(frontendDir, 'dist')))
-app.get('/{*path}', (_req, res) => res.sendFile(resolve(frontendDir, 'dist/index.html')))
-app.use((error, _req, res, _next) => {
-  const status =
-    error instanceof z.ZodError
-      ? 400
-      : error.status ||
-        (['P2002', 'P2003', 'P2034'].includes(error.code)
-          ? 409
-          : error.code === 'P2025'
-            ? 404
-            : 500)
-  const message =
-    error instanceof z.ZodError
-      ? error.issues.map((i) => i.path.join('.') + ': ' + i.message).join('; ')
-      : error.status
-        ? error.message
-        : error.code === 'P2002'
-          ? 'This SKU, barcode, category or account already exists.'
-          : error.code === 'P2003'
-            ? 'This record is still used elsewhere.'
-            : error.code === 'P2025'
-              ? 'Record not found.'
-              : 'The operation could not be completed. Please try again.'
-  if (status === 500) console.error('API operation failed:', error.code || error.name)
+if (!process.env.VERCEL) {
+  app.use(express.static(resolve(frontendDir, 'dist')))
+  app.get('/{*path}', (_req, res) => res.sendFile(resolve(frontendDir, 'dist/index.html')))
+} else {
+  app.use((_req, res) => res.status(404).json({ message: 'API route not found.' }))
+}
+app.use((error, req, res, next) => {
+  if (res.headersSent) return next(error)
+  const { status, message } = apiError(error)
+  if (status >= 500)
+    console.error('API operation failed:', req.method, req.path, status, error.code || error.name)
   res.status(status).json({ message })
 })
 export async function start() {
-  await db.$queryRaw`SELECT 1`
   const server = app.listen(Number(process.env.PORT || 4174), () =>
-    console.log('ASCENT Express API connected to PostgreSQL.'),
+    console.log('ASCENT Express API listening on port ' + server.address().port + '.'),
   )
+  // A temporary database outage must not terminate the API and its Vite proxy.
+  // Health requests report readiness; the pool reconnects on subsequent requests.
+  void db.$queryRaw`SELECT 1`
+    .then(() => console.log('PostgreSQL connection verified.'))
+    .catch((error) =>
+      console.error('PostgreSQL is temporarily unavailable:', error.code || error.name),
+    )
   const stop = () =>
     server.close(() => {
       void db.$disconnect()

@@ -9,7 +9,9 @@ export async function liveFixture() {
   const accounts = {}
   const accountIds = []
   const uploadedKeys = []
-  const originalSettings = await db.storeSettings.findUnique({ where: { id: 'store' } })
+  const originalSettings = process.env.ASCENT_TEST_STORE_SETTINGS === 'true' && await db.storeSettings.findUnique({
+    where: { id: 'store' },
+  })
   async function account(label, role) {
     const email = `${run}-${label}@example.com`
     const password = 'Test-' + randomUUID() + '-aA9!'
@@ -61,7 +63,10 @@ export async function liveFixture() {
       where: {
         OR: [
           { categoryId: { in: categories.map((c) => c.id) } },
-          { name: { startsWith: run + ' ' }, description: 'Live browser system test product' },
+          {
+            name: { startsWith: run + ' ' },
+            description: 'Live browser system test product',
+          },
         ],
       },
       select: { id: true },
@@ -69,18 +74,46 @@ export async function liveFixture() {
     const productIds = products.map((p) => p.id)
     await db.$transaction(
       async (tx) => {
-        await tx.saleItem.deleteMany({ where: { sale: { cashierId: { in: accountIds } } } })
-        await tx.sale.deleteMany({ where: { cashierId: { in: accountIds } } })
-        await tx.orderItem.deleteMany({ where: { order: { userId: { in: accountIds } } } })
+        const saleScope = {
+          OR: [{ cashierId: { in: accountIds } }, { order: { userId: { in: accountIds } } }],
+        }
+        await tx.saleItem.deleteMany({ where: { sale: saleScope } })
+        await tx.sale.deleteMany({ where: saleScope })
+        const testOrders = await tx.order.findMany({
+          where: { userId: { in: accountIds } },
+          select: { id: true },
+        })
+        if (testOrders.length)
+          await tx.paymentWebhook.deleteMany({
+            where: {
+              provider: 'demo',
+              OR: testOrders.map((o) => ({
+                eventType: { startsWith: o.id + ':' },
+              })),
+            },
+          })
+        await tx.orderItem.deleteMany({
+          where: { order: { userId: { in: accountIds } } },
+        })
         await tx.order.deleteMany({ where: { userId: { in: accountIds } } })
         await tx.payment.deleteMany({ where: { actorId: { in: accountIds } } })
-        await tx.inventoryMovement.deleteMany({ where: { actorId: { in: accountIds } } })
+        await tx.inventoryMovement.deleteMany({
+          where: { actorId: { in: accountIds } },
+        })
         await tx.cart.deleteMany({ where: { userId: { in: accountIds } } })
-        await tx.cartMutation.deleteMany({ where: { userId: { in: accountIds } } })
+        await tx.cartMutation.deleteMany({
+          where: { userId: { in: accountIds } },
+        })
         await tx.product.deleteMany({ where: { id: { in: productIds } } })
-        await tx.category.deleteMany({ where: { id: { in: categories.map((c) => c.id) } } })
-        await tx.newsletterSubscription.deleteMany({ where: { email: { startsWith: run + '-' } } })
-        await tx.storeEvent.deleteMany({ where: { audienceId: { in: accountIds } } })
+        await tx.category.deleteMany({
+          where: { id: { in: categories.map((c) => c.id) } },
+        })
+        await tx.newsletterSubscription.deleteMany({
+          where: { email: { startsWith: run + '-' } },
+        })
+        await tx.storeEvent.deleteMany({
+          where: { audienceId: { in: accountIds } },
+        })
         await tx.profile.deleteMany({ where: { id: { in: accountIds } } })
         if (originalSettings)
           await tx.storeSettings.update({
@@ -113,5 +146,14 @@ export async function liveFixture() {
     }
     for (const value of Object.values(accounts)) await value.client.removeAllChannels()
   }
-  return { run, accounts, accountIds, uploadedKeys, account, cleanup, db, admin: supabaseAdmin }
+  return {
+    run,
+    accounts,
+    accountIds,
+    uploadedKeys,
+    account,
+    cleanup,
+    db,
+    admin: supabaseAdmin,
+  }
 }

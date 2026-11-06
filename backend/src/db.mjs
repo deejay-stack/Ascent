@@ -3,7 +3,10 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { databaseConfig } from './database-config.mjs'
 export const db = new PrismaClient({
-  adapter: new PrismaPg(databaseConfig()),
+  adapter: new PrismaPg(databaseConfig(), {
+    onPoolError: (error) =>
+      console.error('Database idle connection closed:', error.code || error.name),
+  }),
 })
 export async function transaction(operation) {
   for (let attempt = 0; attempt < 3; attempt++) {

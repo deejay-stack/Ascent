@@ -8,16 +8,18 @@ export function databaseConfig(connectionString = required('DATABASE_URL')) {
   // pg connection-string SSL options otherwise replace the explicit verified TLS settings.
   for (const key of ['sslmode', 'sslcert', 'sslkey', 'sslrootcert', 'sslaccept'])
     url.searchParams.delete(key)
-  const caPath = process.env.DATABASE_CA_CERT || resolve(backendDir, 'certs/supabase-ca.crt')
+  const ca = process.env.DATABASE_CA_CERT
+    ? readFileSync(resolve(backendDir, process.env.DATABASE_CA_CERT), 'utf8')
+    : readFileSync(new URL('../certs/supabase-ca.crt', import.meta.url), 'utf8')
   return {
     connectionString: url.toString(),
     connectionTimeoutMillis: 20000,
-    idleTimeoutMillis: 60000,
+    idleTimeoutMillis: process.env.VERCEL ? 5000 : 60000,
     max: 5,
     keepAlive: true,
     ssl: {
       rejectUnauthorized: true,
-      ca: [...rootCertificates, readFileSync(resolve(backendDir, caPath), 'utf8')],
+      ca: [...rootCertificates, ca],
     },
   }
 }

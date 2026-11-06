@@ -20,6 +20,7 @@ model Profile {
   sales Sale[]
   payments Payment[]
   movements InventoryMovement[]
+  notifications Notification[]
   @@index([email])
   @@map("profiles")
 }
@@ -64,8 +65,9 @@ model Sale {
   storeAddress String @map("store_address")
   createdAt DateTime @default(now()) @map("created_at")
   cashier String
-  cashierId String @db.Uuid @map("cashier_id")
-  cashierProfile Profile @relation(fields: [cashierId], references: [id], onDelete: Restrict)
+  cashierId String? @db.Uuid @map("cashier_id")
+  cashierProfile Profile? @relation(fields: [cashierId], references: [id], onDelete: Restrict)
+  isDemo Boolean @default(false) @map("is_demo")
   source String
   subtotal Decimal @db.Decimal(12,2)
   discount Decimal @db.Decimal(12,2)
@@ -110,6 +112,15 @@ model Payment {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   sale Sale?
+  checkoutOrder Order? @relation("CheckoutPayment")
+  provider String?
+  providerSessionId String? @map("provider_session_id")
+  providerPaymentId String? @map("provider_payment_id")
+  checkoutUrl String? @map("checkout_url")
+  checkoutStartedAt DateTime? @map("checkout_started_at")
+  currency String @default("PHP")
+  @@unique([provider, providerSessionId])
+  @@unique([provider, providerPaymentId])
   @@map("payments")
 }
 model InventoryMovement {
@@ -141,8 +152,50 @@ model Order {
   total Decimal @db.Decimal(12,2)
   items OrderItem[]
   sale Sale?
+  paymentId String? @unique @map("payment_id")
+  payment Payment? @relation("CheckoutPayment", fields: [paymentId], references: [id], onDelete: Restrict)
+  paymentMethod String @default("cash") @map("payment_method")
+  contactName String @default("") @map("contact_name")
+  contactPhone String @default("") @map("contact_phone")
+  deliveryAddress String @default("") @map("delivery_address")
+  requestHash String? @map("request_hash")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  events OrderEvent[]
+  notifications Notification[]
   @@index([userId,createdAt])
   @@map("orders")
+}
+
+model OrderEvent {
+  id String @id @default(uuid())
+  orderId String @map("order_id")
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  message String
+  actor String
+  createdAt DateTime @default(now()) @map("created_at")
+  @@index([orderId, createdAt])
+  @@map("order_events")
+}
+
+model Notification {
+  id String @id @default(uuid())
+  userId String @db.Uuid @map("user_id")
+  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId String @map("order_id")
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  message String
+  readAt DateTime? @map("read_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+model PaymentWebhook {
+  id String @id
+  provider String
+  eventType String @map("event_type")
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("payment_webhooks")
 }
 model OrderItem {
   id String @id @default(uuid())

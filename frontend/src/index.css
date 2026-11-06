@@ -98,7 +98,7 @@
   color-scheme: dark;
 }
 
-html { scroll-behavior: smooth; scroll-padding-top: 92px; }
+html { scroll-behavior: auto; scroll-padding-top: 92px; }
 body { min-width: 320px; min-height: 100vh; margin: 0; background: var(--page); }
 body, button, input, select, textarea { font-family: "Inter", ui-sans-serif, system-ui, sans-serif; }
 h1, h2, h3, h4, .brand-wordmark { font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }

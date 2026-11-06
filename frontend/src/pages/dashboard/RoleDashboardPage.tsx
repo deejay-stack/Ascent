@@ -14,6 +14,7 @@ import type { Sale } from '../../types/commerce'
 import { BarChart } from '../../components/reports/BarChart'
 import { SalesTable } from '../../components/reports/SalesTable'
 import { ReceiptPreview } from '../../components/pos/ReceiptPreview'
+import { isActiveOrder } from '../../services/checkout'
 export function RoleDashboardPage({ role }: { role: UserRole }) {
   const { user } = useAuth(),
     { itemCount } = useCart()
@@ -47,7 +48,7 @@ export function RoleDashboardPage({ role }: { role: UserRole }) {
           </article>
           <article>
             <span>Active orders</span>
-            <strong>{orders.filter((o) => o.status === 'Awaiting payment').length}</strong>
+            <strong>{orders.filter(isActiveOrder).length}</strong>
           </article>
           <article>
             <span>Completed orders</span>

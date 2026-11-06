@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import type { AuthUser } from '../../types/auth'
 import { inventoryService } from '../../services'
 import { Modal } from '../ui/Modal'
@@ -20,6 +20,7 @@ export function StockAdjustmentModal({
     type === 'adjustment'
       ? Number(quantity)
       : product.stockQuantity + Number(quantity) * (type === 'stock-out' ? -1 : 1)
+  const retry = useRef<{ signature: string; requestId: string } | null>(null)
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     if (busy) return
@@ -34,8 +35,11 @@ export function StockAdjustmentModal({
       return
     }
     setBusy(true)
+    const signature = JSON.stringify({ productId: product.id, type, quantity: Number(quantity), reason: reason.trim() })
+    if (retry.current?.signature !== signature) retry.current = { signature, requestId: crypto.randomUUID() }
     try {
       await inventoryService.adjust({
+        requestId: retry.current.requestId,
         productId: product.id,
         type,
         quantity: Number(quantity),

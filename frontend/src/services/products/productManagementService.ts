@@ -5,7 +5,8 @@ import { id, mutate } from '../mockStore'
 
 export type ProductInput = Omit<Product, 'id' | 'slug' | 'createdAt' | 'updatedAt'>
 export const productManagementService = {
-  async save(productId: string | null, input: ProductInput, actor: AuthUser) {
+  async save(productId: string | null, input: ProductInput, actor: AuthUser, _requestId?: string) {
+    void _requestId
     if (actor.role !== 'owner') throw new Error('Only owners can manage products.')
     if (!input.name.trim() || !input.description.trim() || !input.unit.trim())
       throw new Error('Name, description and unit are required.')

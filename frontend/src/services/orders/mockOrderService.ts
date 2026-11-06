@@ -2,13 +2,19 @@ import type { AuthUser } from '../../types/auth'
 import type { CartItem, Sale } from '../../types/commerce'
 import { cents } from '../money'
 import { getState, id, mutate, requireOperator, validateCart } from '../mockStore'
+import type { CheckoutDetails } from '../checkout'
 export const orderService = {
   list(actor: AuthUser) {
     return getState()
       .orders.filter((o) => actor.role !== 'customer' || o.userId === actor.id)
       .toReversed()
   },
-  async create(items: CartItem[], fulfillment: 'pickup' | 'delivery', actor: AuthUser) {
+  async create(
+    items: CartItem[],
+    fulfillment: 'pickup' | 'delivery',
+    actor: AuthUser,
+    checkout?: CheckoutDetails,
+  ) {
     if (actor.role !== 'customer') throw new Error('Checkout requires a customer account.')
     return mutate((draft) => {
       const lines = validateCart(draft, items)
@@ -16,6 +22,10 @@ export const orderService = {
       const order = {
         id: id('ORD'),
         userId: actor.id,
+        paymentMethod: checkout?.paymentMethod ?? 'cash',
+        contactName: checkout?.contactName,
+        contactPhone: checkout?.contactPhone,
+        deliveryAddress: checkout?.deliveryAddress,
         status: 'Awaiting payment',
         fulfillment: fulfillment === 'delivery' ? ('Delivery' as const) : ('Store pickup' as const),
         createdAt: now,
@@ -54,12 +64,15 @@ export const orderService = {
       return { order }
     })
   },
-  async settle(orderId: string, actor: AuthUser): Promise<Sale> {
+  async settle(orderId: string, actor: AuthUser, amountReceived?: number): Promise<Sale> {
     requireOperator(actor)
     return mutate((draft) => {
       const order = draft.orders.find((o) => o.id === orderId)
       if (!order || order.status !== 'Awaiting payment')
         throw new Error('Order is no longer awaiting payment.')
+      const received = amountReceived ?? order.total
+      if (!Number.isFinite(received) || cents(received) < cents(order.total))
+        throw new Error('The amount received is less than the order total.')
       const sale: Sale = {
         storeName: draft.settings.name,
         storeAddress: draft.settings.address,
@@ -84,8 +97,8 @@ export const orderService = {
         tax: 0,
         total: order.total,
         paymentMethod: 'cash',
-        amountReceived: order.total,
-        change: 0,
+        amountReceived: received,
+        change: (cents(received) - cents(order.total)) / 100,
         paymentId: id('CASH'),
       }
       order.status = 'Completed'
@@ -94,11 +107,13 @@ export const orderService = {
     })
   },
   async cancel(orderId: string, actor: AuthUser) {
-    requireOperator(actor)
+    if (actor.role !== 'customer') requireOperator(actor)
     mutate((draft) => {
       const order = draft.orders.find((o) => o.id === orderId)
-      if (!order || order.status !== 'Awaiting payment')
-        throw new Error('Order cannot be cancelled.')
+      if (!order || (actor.role === 'customer' && order.userId !== actor.id))
+        throw new Error('Order not found.')
+      if (order.status === 'Cancelled') return
+      if (order.status !== 'Awaiting payment') throw new Error('Order cannot be cancelled.')
       for (const l of order.items) {
         const p = draft.products.find((p) => p.id === l.productId)!
         const before = p.stockQuantity

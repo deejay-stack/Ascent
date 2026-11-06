@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto'
 import { db, transaction } from './db.mjs'
-import { cents, fail, mergeItems, totals } from './validation.mjs'
+import { cents, fail, mergeItems, totals, validateSaleRetry } from './validation.mjs'
 import { readCart } from './cart.mjs'
+import { checkoutOptions } from './checkout-rules.mjs'
 
 export const serialize = (value) => JSON.parse(JSON.stringify(value))
 export const numericProduct = (p) => ({
@@ -23,6 +24,17 @@ export const numericOrder = (o) => ({
   ...o,
   subtotal: Number(o.subtotal),
   total: Number(o.total),
+  payment: o.payment
+    ? {
+        id: o.payment.id,
+        method: o.payment.method,
+        status: o.payment.status,
+        total: Number(o.payment.total),
+        isDemo: o.payment.isDemo,
+        provider: o.payment.provider,
+        reference: o.payment.providerPaymentId,
+      }
+    : null,
   items: o.items.map((l) => ({ ...l, price: Number(l.price), lineTotal: Number(l.lineTotal) })),
 })
 export async function emit(tx, audienceId = null) {
@@ -34,30 +46,38 @@ export async function settings(tx = db) {
 }
 export async function snapshot(actor) {
   const operator = actor && ['owner', 'staff'].includes(actor.role)
-  const [products, categories, store, sales, movements, orders, cart] = await db.$transaction(
-    async (tx) =>
-      Promise.all([
-        tx.product.findMany({
-          where: operator ? {} : { isArchived: false },
-          orderBy: { createdAt: 'asc' },
-        }),
-        tx.category.findMany({ orderBy: { name: 'asc' } }),
-        tx.storeSettings.findUniqueOrThrow({ where: { id: 'store' } }),
-        operator
-          ? tx.sale.findMany({ include: { items: true }, orderBy: { createdAt: 'desc' } })
-          : [],
-        operator ? tx.inventoryMovement.findMany({ orderBy: { createdAt: 'desc' } }) : [],
-        actor
-          ? tx.order.findMany({
-              where: operator ? {} : { userId: actor.id },
-              include: { items: true },
-              orderBy: { createdAt: 'desc' },
-            })
-          : [],
-        actor?.role === 'customer' ? readCart(actor.id, tx) : { items: [], version: 0 },
-      ]),
-    { isolationLevel: 'RepeatableRead', maxWait: 10000, timeout: 20000 },
-  )
+  const [products, categories, store, sales, movements, orders, cart, notifications] =
+    await db.$transaction(
+      async (tx) =>
+        Promise.all([
+          tx.product.findMany({
+            where: operator ? {} : { isArchived: false },
+            orderBy: { createdAt: 'asc' },
+          }),
+          tx.category.findMany({ orderBy: { name: 'asc' } }),
+          tx.storeSettings.findUniqueOrThrow({ where: { id: 'store' } }),
+          operator
+            ? tx.sale.findMany({ include: { items: true }, orderBy: { createdAt: 'desc' } })
+            : [],
+          operator ? tx.inventoryMovement.findMany({ orderBy: { createdAt: 'desc' } }) : [],
+          actor
+            ? tx.order.findMany({
+                where: operator ? {} : { userId: actor.id },
+                include: { items: true, payment: true, events: { orderBy: { createdAt: 'asc' } } },
+                orderBy: { createdAt: 'desc' },
+              })
+            : [],
+          actor?.role === 'customer' ? readCart(actor.id, tx) : { items: [], version: 0 },
+          actor
+            ? tx.notification.findMany({
+                where: { userId: actor.id },
+                orderBy: { createdAt: 'desc' },
+                take: 50,
+              })
+            : [],
+        ]),
+      { isolationLevel: 'RepeatableRead', maxWait: 10000, timeout: 20000 },
+    )
   return serialize({
     products: products.map((p) => {
       const row = numericProduct(p)
@@ -71,6 +91,8 @@ export async function snapshot(actor) {
     orders: orders.map(numericOrder),
     paymentDemosEnabled: process.env.ENABLE_PAYMENT_DEMOS === 'true',
     cart,
+    notifications,
+    checkoutMethods: checkoutOptions(),
   })
 }
 export async function lockAndDeduct(tx, requested, actor, type, reason, reference) {
@@ -116,8 +138,7 @@ export async function completeSale(input, actor) {
         include: { items: true },
       })
       if (existing) {
-        if (existing.cashierId !== actor.id) fail(409, 'Transaction number already used.')
-        return existing
+        return validateSaleRetry(existing, input, actor)
       }
       const lines = await lockAndDeduct(
         tx,
@@ -174,6 +195,7 @@ export async function completeSale(input, actor) {
           amountReceived: received / 100,
           change: (received - cents(bill.total)) / 100,
           paymentId: payment.id,
+          isDemo: payment.isDemo,
           items: {
             create: lines.map(({ product: p, quantity }) => ({
               productId: p.id,
@@ -199,149 +221,8 @@ export async function completeSale(input, actor) {
         where: { id: input.transactionId },
         include: { items: true },
       })
-      if (existing?.cashierId === actor.id) return serialize(numericSale(existing))
+      if (existing) return serialize(numericSale(validateSaleRetry(existing, input, actor)))
     }
     throw error
   }
-}
-export async function createOrder(requested, fulfillment, actor, orderId) {
-  const order = await transaction(async (tx) => {
-    const existing = await tx.order.findUnique({ where: { id: orderId }, include: { items: true } })
-    if (existing) {
-      if (existing.userId !== actor.id) fail(409, 'Order reference already used.')
-      return existing
-    }
-    const lines = await lockAndDeduct(
-      tx,
-      requested,
-      actor,
-      'order',
-      'Reserved for customer order',
-      orderId,
-    )
-    const bill = totals(
-      lines.map((l) => ({ price: l.product.sellingPrice, quantity: l.quantity })),
-      0,
-      0,
-    )
-    const order = await tx.order.create({
-      data: {
-        id: orderId,
-        userId: actor.id,
-        fulfillment: fulfillment === 'delivery' ? 'Delivery' : 'Store pickup',
-        subtotal: bill.subtotal,
-        total: bill.total,
-        items: {
-          create: lines.map(({ product: p, quantity }) => ({
-            productId: p.id,
-            name: p.name,
-            price: p.sellingPrice,
-            unit: p.unit,
-            quantity,
-            lineTotal: (cents(p.sellingPrice) * quantity) / 100,
-          })),
-        },
-      },
-      include: { items: true },
-    })
-    await emit(tx, actor.id)
-    await tx.cartItem.deleteMany({ where: { userId: actor.id } })
-    await tx.cart.updateMany({ where: { userId: actor.id }, data: { version: { increment: 1 } } })
-    return order
-  })
-  return serialize(numericOrder(order))
-}
-export async function settleOrder(orderId, actor) {
-  return transaction(async (tx) => {
-    const order = await tx.order.findUnique({
-      where: { id: orderId },
-      include: { items: { include: { product: true } } },
-    })
-    if (!order || order.status !== 'Awaiting payment')
-      fail(409, 'Order is no longer awaiting payment.')
-    const updated = await tx.order.updateMany({
-      where: { id: orderId, status: 'Awaiting payment' },
-      data: { status: 'Completed' },
-    })
-    if (!updated.count) fail(409, 'Order was already processed.')
-    const store = await settings(tx),
-      saleId = 'ASC-' + randomUUID()
-    const payment = await tx.payment.create({
-      data: {
-        transactionId: saleId,
-        actorId: actor.id,
-        method: 'cash',
-        status: 'succeeded',
-        total: order.total,
-        isDemo: false,
-      },
-    })
-    const sale = await tx.sale.create({
-      data: {
-        id: saleId,
-        receiptNumber: 'RCP-' + randomUUID(),
-        storeName: store.name,
-        storeAddress: store.address,
-        cashier: actor.name,
-        cashierId: actor.id,
-        source: 'online',
-        subtotal: order.subtotal,
-        discount: 0,
-        tax: 0,
-        total: order.total,
-        paymentMethod: 'cash',
-        amountReceived: order.total,
-        change: 0,
-        paymentId: payment.id,
-        orderId,
-        items: {
-          create: order.items.map((l) => ({
-            productId: l.productId,
-            name: l.name,
-            categoryId: l.product.categoryId,
-            unit: l.unit,
-            imageUrl: l.product.imageUrl,
-            quantity: l.quantity,
-            unitPrice: l.price,
-            total: l.lineTotal,
-          })),
-        },
-      },
-      include: { items: true },
-    })
-    await emit(tx, order.userId)
-    return serialize(numericSale(sale))
-  })
-}
-export async function cancelOrder(orderId, actor) {
-  return transaction(async (tx) => {
-    const order = await tx.order.findUnique({ where: { id: orderId }, include: { items: true } })
-    if (!order || order.status !== 'Awaiting payment') fail(409, 'Order cannot be cancelled.')
-    const updated = await tx.order.updateMany({
-      where: { id: orderId, status: 'Awaiting payment' },
-      data: { status: 'Cancelled' },
-    })
-    if (!updated.count) fail(409, 'Order was already processed.')
-    for (const line of order.items.toSorted((a, b) => a.productId.localeCompare(b.productId))) {
-      const p = await tx.product.update({
-        where: { id: line.productId },
-        data: { stockQuantity: { increment: line.quantity } },
-      })
-      await tx.inventoryMovement.create({
-        data: {
-          productId: p.id,
-          productName: p.name,
-          type: 'stock-in',
-          quantity: line.quantity,
-          before: p.stockQuantity - line.quantity,
-          after: p.stockQuantity,
-          reason: 'Cancelled order reservation',
-          responsibleUser: actor.name,
-          actorId: actor.id,
-          reference: order.id,
-        },
-      })
-    }
-    await emit(tx, order.userId)
-  })
 }

@@ -1,6 +1,7 @@
 import type { Category, Product, Order } from '../../types/product'
 import type { Sale, InventoryMovement, StoreSettings, CartItem } from '../../types/commerce'
 import { request } from '../api'
+import type { CheckoutOption, OrderNotification } from '../checkout'
 export type RemoteProduct = Omit<Product, 'costPrice'> & { costPrice?: number }
 export type RemoteSnapshot = {
   products: RemoteProduct[]
@@ -11,6 +12,8 @@ export type RemoteSnapshot = {
   settings: StoreSettings
   paymentDemosEnabled: boolean
   cart: { items: CartItem[]; version: number }
+  checkoutMethods: CheckoutOption[]
+  notifications: OrderNotification[]
 }
 const empty = (): RemoteSnapshot => ({
   products: [],
@@ -21,6 +24,8 @@ const empty = (): RemoteSnapshot => ({
   settings: { name: 'ASCENT', address: 'Store address', taxRate: 0 },
   paymentDemosEnabled: false,
   cart: { items: [], version: 0 },
+  checkoutMethods: [],
+  notifications: [],
 })
 let state = empty(),
   revision = 0,

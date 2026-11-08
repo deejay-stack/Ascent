@@ -1,6 +1,6 @@
+
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "express",
-  "installCommand": "npm ci --include=dev --legacy-peer-deps",
   "buildCommand": "npm run build --workspace @ascent/backend"
 }

@@ -1,6 +1,6 @@
 # ASCENT grocery and minimart
 
-React/TypeScript frontend and Express/Prisma backend connected to Supabase PostgreSQL, Auth, Storage and Realtime. The application supports owner inventory management, customer carts/orders, staff POS, cash payments, receipts, stock history, account management, settings and calculated reports.
+React/TypeScript frontend and Express/TypeScript/Prisma backend connected to Supabase PostgreSQL, Auth, Storage and Realtime. The application supports owner inventory management, customer carts/orders, staff POS, cash payments, receipts, stock history, account management, settings and calculated reports.
 
 ## Project layout
 
@@ -13,6 +13,8 @@ React/TypeScript frontend and Express/Prisma backend connected to Supabase Postg
 | `artifacts/` | Generated test reports, screenshots and PDFs; ignored by Git |
 
 The root `package.json` coordinates npm workspaces. Each application has its own package and environment file; npm shares installed dependencies under root `node_modules/`.
+
+The [TypeScript migration and verification report](docs/typescript-migration-2026-11-07.md) records the source inventory, build isolation, executed checks, and remaining deployment limits. Application source uses `.ts`/`.tsx`; Node utilities and tests use `.mts` with native type stripping on Node 22.21+. The backend compiles its own `src/` into `backend/dist/` using NodeNext and rewrites relative TypeScript imports to `.js`. Shared test/operator checks use the separate root `tsconfig.tools.json`.
 
 Deploy this repository as separate Vercel frontend and Express backend projects using the settings, environment variables and verification steps in [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md). Local development continues to use the Vite `/api` proxy. Production uses `VITE_API_URL` and the backend's explicit `APP_URL` CORS allowlist.
 
@@ -38,6 +40,8 @@ npm start
 
 The production-style local server opens at http://localhost:4174.
 
+`npm run build` builds both workspaces before `npm start` runs the compiled backend. `npm run server` starts the backend source directly; `npm run dev` starts both applications for development. Independent builds remain `npm run build --workspace @ascent/frontend` and `npm run build --workspace @ascent/backend`.
+
 ## Supabase integration
 
 Public browser configuration belongs in `frontend/.env.local`; server keys, database access and bootstrap accounts belong in `backend/.env.local`. See the corresponding `.env.example` files and [current database handoff](docs/live-database-handoff.md).
@@ -60,6 +64,7 @@ See the [project review and completion plan](docs/project-completion-plan.md) fo
 
 ```sh
 npm run lint
+npm run typecheck
 npm run build
 npm run db:validate
 npm run test:unit

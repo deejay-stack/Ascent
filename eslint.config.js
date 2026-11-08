@@ -9,10 +9,10 @@ export default defineConfig([
   globalIgnores(['**/dist/**', 'artifacts/**']),
   {
     files: [
-      'backend/**/*.mjs',
-      'scripts/**/*.mjs',
-      'frontend/tests/**/*.mjs',
-      'frontend/scripts/**/*.mjs',
+      'backend/**/*.mts',
+      'scripts/**/*.mts',
+      'frontend/tests/**/*.mts',
+      'frontend/scripts/**/*.mts',
     ],
     extends: [js.configs.recommended],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
@@ -24,7 +24,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx,mts}'],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -32,7 +32,7 @@ export default defineConfig([
       reactRefresh.configs.vite,
     ],
     languageOptions: {
-      globals: globals.browser,
+      globals: { ...globals.browser, ...globals.node },
     },
   },
 ])

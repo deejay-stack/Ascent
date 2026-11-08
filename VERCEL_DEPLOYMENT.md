@@ -5,11 +5,15 @@
 Repository: `https://github.com/deejay-stack/Ascent`, branch `main`. Keep the existing repository and create two Vercel projects from it.
 
 - `frontend/`: React 19, TypeScript 6, Vite 8, Tailwind 4 and React Router 7. Build output is `frontend/dist/`.
-- `backend/`: Express 5, ES modules, Prisma 7 with the PostgreSQL `pg` adapter. Local launcher is `backend/src/index.mjs`; the native Vercel entry is the default export in `backend/src/app.mjs`.
+- `backend/`: Express 5, TypeScript with NodeNext ES modules, Prisma 7 with the PostgreSQL `pg` adapter. Development uses `backend/src/index.ts`; local production starts `backend/dist/index.js`. Both `src/app.ts` and `src/index.ts` export the Express app for Vercel without opening a listener there.
 - Supabase provides PostgreSQL, Auth, Storage and browser Realtime. Access tokens travel in the `Authorization: Bearer` header. Sessions persist in the browser's dedicated IndexedDB store; the API does not use login cookies or in-memory sessions.
 - Root `package.json` and `package-lock.json` manage both npm workspaces. Use Node **22.x**, matching the validated local Node 22.21.0 environment.
 
 **Readiness: ready with manual configuration required.** The owner account was restored with operator approval and verified in the production-build browser check. Source preparation does not create Vercel projects or deploy anything. A real deployment and its URLs have not been verified. See `docs/vercel-validation-2026-11-06.md` for this run's evidence and limitations.
+
+The [November 7 TypeScript migration report](docs/typescript-migration-2026-11-07.md) records the current compiler, build and workflow verification. Actual deployment is **not yet verified on Vercel**.
+
+The earlier `NODE_TYPESCRIPT_ERROR` mentioning `../frontend/src/main.tsx` indicates frontend code entered a Node TypeScript compilation without the frontend JSX configuration. The frontend already has `jsx: react-jsx` and its React dependencies; those settings are preserved. The backend now has its own `tsconfig.json`, with `rootDir/include` restricted to `src`, no frontend project references, and explicit NodeNext compilation. Each Vercel build command names its workspace to prevent running the root build in the wrong context. Set the project Root Directories below; repository changes cannot correct stale dashboard overrides. Shared operator/test compilation is explicitly separate in root `tsconfig.tools.json`, including the existing demo seed's frontend data import. The original remote build log and project settings were not available for retrospective confirmation of the exact dashboard misconfiguration.
 
 ## Resolve the existing admin login
 
@@ -68,9 +72,9 @@ Import **deejay-stack/Ascent** and use:
 | Framework Preset | Express |
 | Node.js | 22.x |
 | Install Command | `npm ci --include=dev --legacy-peer-deps` |
-| Build Command | `npm run build` (generates Prisma Client) |
+| Build Command | `npm run build --workspace @ascent/backend` (generates Prisma Client, then compiles backend TypeScript) |
 | Output Directory | Leave unset; native Express supplies the function |
-| Entry | `src/app.mjs`, default Express export |
+| Entry | `src/app.ts` / `src/index.ts`, default Express export |
 | Health check | `https://YOUR-BACKEND-DOMAIN/api/health` |
 
 Allow access to files outside the Root Directory in the build settings so Vercel can use the root workspace package and lockfile. Keep dependency installation enabled for dev dependencies: Prisma generation and TypeScript build tools need them. `backend/vercel.json` selects Express and the commands; no legacy `builds`/`routes` wrapper or `api/index.js` is used.
@@ -105,7 +109,7 @@ Import **the same repository** again:
 | Framework Preset | Vite |
 | Node.js | 22.x |
 | Install Command | `npm ci --include=dev --legacy-peer-deps` |
-| Build Command | `npm run build` |
+| Build Command | `npm run build --workspace @ascent/frontend` |
 | Output Directory | `dist` |
 
 Enable access outside the Root Directory for the shared npm workspace lockfile. Configure:
@@ -187,7 +191,7 @@ After genuine deployment, verify the real URLs:
 
 ## 7. Review, commit and push yourself
 
-The workspace already contained substantial uncommitted application work before this task. Review all changes; several current imports depend on those new files and migrations. The following intentionally includes the full reviewed working application, not only deployment files. Ignored `.env.local`, artifacts, `node_modules` and `dist` must stay untracked.
+Review the migration changes, including renamed source/tests and the added compiler/type files. Ignored `.env.local`, artifacts, `node_modules` and `dist` must stay untracked. The recoverable pre-migration baseline is commit `617dc5406fffb8f6c43dd0a08e0a2176af08e70c`.
 
 ```sh
 git status --short
@@ -195,7 +199,7 @@ git diff --check
 git add --all
 git diff --cached --stat
 git diff --cached
-git commit -m "Prepare ASCENT for separate Vercel deployments and owner recovery"
+git commit -m "Migrate ASCENT backend and tools to TypeScript with isolated Vercel builds"
 git push origin main
 ```
 

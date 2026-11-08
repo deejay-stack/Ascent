@@ -1,10 +1,13 @@
-import { frontendDir } from '../src/env.mjs'
+import { frontendDir } from '../src/env.ts'
 import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { extname, resolve } from 'node:path'
-import { db } from '../src/db.mjs'
-import { supabaseAdmin } from '../src/supabase.mjs'
-import { categories, seedProducts } from '../../frontend/src/data/grocerySeed.ts'
+import { db } from '../src/db.ts'
+import { supabaseAdmin } from '../src/supabase.ts'
+import {
+  categories,
+  seedProducts,
+} from '../../frontend/src/data/grocerySeed.ts'
 
 // A real store starts with owner-entered stock. Samples require an explicit flag.
 const includeDemoCatalog = process.argv.includes('--demo-catalog')
@@ -16,7 +19,10 @@ async function bootstrap(role: 'owner' | 'staff') {
     name = process.env[prefix + '_NAME']
   if (role === 'staff' && !email) return null
   if (!email || !password || password.length < 8 || !name)
-    throw new Error(prefix + ' email, name and a password of at least 8 characters are required.')
+    throw new Error(
+      prefix +
+        ' email, name and a password of at least 8 characters are required.',
+    )
   let userId: string | undefined
   for (let page = 1; page <= 100; page++) {
     const { data, error } = await supabaseAdmin.auth.admin.listUsers({
@@ -24,7 +30,9 @@ async function bootstrap(role: 'owner' | 'staff') {
       perPage: 100,
     })
     if (error) throw new Error('Auth account lookup failed.')
-    const existing = data.users.find((u) => u.email?.toLowerCase() === email.toLowerCase())
+    const existing = data.users.find(
+      (u) => u.email?.toLowerCase() === email.toLowerCase(),
+    )
     if (existing) {
       userId = existing.id
       break
@@ -39,7 +47,9 @@ async function bootstrap(role: 'owner' | 'staff') {
       user_metadata: { name },
     })
     if (error || !data.user)
-      throw new Error('Auth account creation failed. Check the configured account fields.')
+      throw new Error(
+        'Auth account creation failed. Check the configured account fields.',
+      )
     userId = data.user.id
   }
   await db.profile.upsert({
@@ -60,7 +70,12 @@ try {
     const { error } = await supabaseAdmin.storage.createBucket(bucket, {
       public: true,
       fileSizeLimit: 2 * 1024 * 1024,
-      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'],
+      allowedMimeTypes: [
+        'image/png',
+        'image/jpeg',
+        'image/webp',
+        'image/svg+xml',
+      ],
     })
     if (error) throw new Error('Could not create product image bucket.')
   }
@@ -89,7 +104,8 @@ try {
       .upload(imageName, image, { contentType, upsert: false })
     if (uploadError && uploadError.message !== 'The resource already exists')
       throw new Error('Sample product image upload failed.')
-    const imageUrl = supabaseAdmin.storage.from(bucket).getPublicUrl(imageName).data.publicUrl
+    const imageUrl = supabaseAdmin.storage.from(bucket).getPublicUrl(imageName)
+      .data.publicUrl
     await db.$transaction(async (tx) => {
       await tx.product.create({
         data: {

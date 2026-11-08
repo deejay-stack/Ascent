@@ -1,0 +1,3856 @@
+{
+  "baseline": "617dc5406fffb8f6c43dd0a08e0a2176af08e70c",
+  "sourceFilesExamined": 198,
+  "converted": 60,
+  "importsModified": 47,
+  "addedTypeModules": [
+    "backend/src/types.ts",
+    "backend/tests/helpers/api-types.ts",
+    "frontend/tests/protocol.ts"
+  ],
+  "files": [
+    {
+      "path": "backend/prisma.config.ts",
+      "responsibility": "Tool configuration",
+      "target": "backend/prisma.config.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "dotenv",
+        "prisma/config",
+        "node:url"
+      ],
+      "importsAfter": [
+        "dotenv",
+        "prisma/config",
+        "node:url"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "backend/scripts/check-auth.mjs",
+      "responsibility": "Operator/development utility: check-auth.mjs",
+      "target": "backend/scripts/check-auth.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "../src/env.mjs",
+        "@supabase/supabase-js",
+        "../src/db.mjs",
+        "../src/supabase.mjs"
+      ],
+      "importsAfter": [
+        "../src/env.ts",
+        "@supabase/supabase-js",
+        "../src/db.ts",
+        "../src/supabase.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/scripts/check-local.mjs",
+      "responsibility": "Operator/development utility: check-local.mjs",
+      "target": "backend/scripts/check-local.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "backend/scripts/check-supabase.mjs",
+      "responsibility": "Operator/development utility: check-supabase.mjs",
+      "target": "backend/scripts/check-supabase.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "../src/env.mjs",
+        "node:fs",
+        "node:path",
+        "dotenv",
+        "../src/db.mjs",
+        "../src/supabase.mjs"
+      ],
+      "importsAfter": [
+        "../src/env.ts",
+        "node:fs",
+        "node:path",
+        "dotenv",
+        "../src/db.ts",
+        "../src/supabase.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/scripts/diagnose-migration.mjs",
+      "responsibility": "Operator/development utility: diagnose-migration.mjs",
+      "target": "backend/scripts/diagnose-migration.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "../src/env.mjs",
+        "node:child_process",
+        "node:path"
+      ],
+      "importsAfter": [
+        "../src/env.ts",
+        "node:child_process",
+        "node:path"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/scripts/inspect-supabase.mjs",
+      "responsibility": "Operator/development utility: inspect-supabase.mjs",
+      "target": "backend/scripts/inspect-supabase.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "../src/env.mjs",
+        "pg",
+        "@supabase/supabase-js",
+        "../src/database-config.mjs"
+      ],
+      "importsAfter": [
+        "../src/env.ts",
+        "pg",
+        "@supabase/supabase-js",
+        "../src/database-config.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/scripts/migrate.mjs",
+      "responsibility": "Operator/development utility: migrate.mjs",
+      "target": "backend/scripts/migrate.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:fs/promises",
+        "node:crypto",
+        "node:path",
+        "pg",
+        "../src/env.mjs",
+        "../src/database-config.mjs",
+        "../src/migration-history.mjs"
+      ],
+      "importsAfter": [
+        "node:fs/promises",
+        "node:crypto",
+        "node:path",
+        "pg",
+        "../src/env.ts",
+        "../src/database-config.ts",
+        "../src/migration-history.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/scripts/restore-owner.mjs",
+      "responsibility": "Operator/development utility: restore-owner.mjs",
+      "target": "backend/scripts/restore-owner.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "../src/env.mjs",
+        "@supabase/supabase-js",
+        "../src/db.mjs",
+        "../src/supabase.mjs"
+      ],
+      "importsAfter": [
+        "../src/env.ts",
+        "@supabase/supabase-js",
+        "../src/db.ts",
+        "../src/supabase.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/scripts/seed-supabase.mts",
+      "responsibility": "Operator/development utility: seed-supabase.mts",
+      "target": "backend/scripts/seed-supabase.mts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../src/env.mjs",
+        "node:crypto",
+        "node:fs/promises",
+        "node:path",
+        "../src/db.mjs",
+        "../src/supabase.mjs",
+        "../../frontend/src/data/grocerySeed.ts"
+      ],
+      "importsAfter": [
+        "../src/env.ts",
+        "node:crypto",
+        "node:fs/promises",
+        "node:path",
+        "../src/db.ts",
+        "../src/supabase.ts",
+        "../../frontend/src/data/grocerySeed.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/account-access.mjs",
+      "responsibility": "Serializable owner handover and account activation rules",
+      "target": "backend/src/account-access.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "./validation.mjs"
+      ],
+      "importsAfter": [
+        "./types.ts",
+        "./validation.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/api-errors.mjs",
+      "responsibility": "Existing validation, upload, database and application error response mapping",
+      "target": "backend/src/api-errors.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "zod",
+        "multer"
+      ],
+      "importsAfter": [
+        "zod",
+        "multer"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "backend/src/app.mjs",
+      "responsibility": "Express initialization, middleware ordering, all live API handlers, local static serving and error handling",
+      "target": "backend/src/app.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "express",
+        "helmet",
+        "express-rate-limit",
+        "multer",
+        "zod",
+        "node:crypto",
+        "node:path",
+        "./db.mjs",
+        "./env.mjs",
+        "./supabase.mjs",
+        "./auth.mjs",
+        "./validation.mjs",
+        "./cart-rules.mjs",
+        "./account-access.mjs",
+        "./products.mjs",
+        "./api-errors.mjs",
+        "./cors.mjs",
+        "./orders.mjs",
+        "./checkout-rules.mjs",
+        "./cart.mjs",
+        "./commerce.mjs"
+      ],
+      "importsAfter": [
+        "express",
+        "express",
+        "node:net",
+        "helmet",
+        "express-rate-limit",
+        "multer",
+        "zod",
+        "node:crypto",
+        "node:path",
+        "./db.ts",
+        "./env.ts",
+        "./supabase.ts",
+        "./auth.ts",
+        "./validation.ts",
+        "./cart-rules.ts",
+        "./account-access.ts",
+        "./products.ts",
+        "./api-errors.ts",
+        "./cors.ts",
+        "./orders.ts",
+        "./checkout-rules.ts",
+        "./cart.ts",
+        "./commerce.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/auth.mjs",
+      "responsibility": "Supabase bearer-token validation, profile synchronization and role authorization",
+      "target": "backend/src/auth.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "./db.mjs",
+        "./supabase.mjs",
+        "./validation.mjs"
+      ],
+      "importsAfter": [
+        "express",
+        "./db.ts",
+        "./supabase.ts",
+        "./validation.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/cart-rules.mjs",
+      "responsibility": "Zod cart commands and stock limits",
+      "target": "backend/src/cart-rules.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "zod",
+        "./validation.mjs"
+      ],
+      "importsAfter": [
+        "zod",
+        "./validation.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/cart.mjs",
+      "responsibility": "Persistent cart mutations, versioning and idempotency",
+      "target": "backend/src/cart.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:crypto",
+        "./db.mjs",
+        "./validation.mjs",
+        "./cart-rules.mjs"
+      ],
+      "importsAfter": [
+        "zod",
+        "./cart-rules.ts",
+        "./types.ts",
+        "node:crypto",
+        "./db.ts",
+        "./validation.ts",
+        "./cart-rules.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/catalog.mjs",
+      "responsibility": "Mock fallback catalog seed",
+      "target": "backend/src/catalog.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "backend/src/checkout-rules.mjs",
+      "responsibility": "Checkout validation, enabled demo/cash methods and fulfillment transitions",
+      "target": "backend/src/checkout-rules.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "zod",
+        "./validation.mjs"
+      ],
+      "importsAfter": [
+        "zod",
+        "./validation.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/commerce.mjs",
+      "responsibility": "Snapshot projections, inventory deduction, POS sale/payment/receipt transaction",
+      "target": "backend/src/commerce.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:crypto",
+        "./db.mjs",
+        "./validation.mjs",
+        "./cart.mjs",
+        "./checkout-rules.mjs"
+      ],
+      "importsAfter": [
+        "zod",
+        "./validation.ts",
+        "./types.ts",
+        "node:crypto",
+        "./db.ts",
+        "./validation.ts",
+        "./cart.ts",
+        "./checkout-rules.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/cors.mjs",
+      "responsibility": "Exact frontend origins and bearer-token preflights",
+      "target": "backend/src/cors.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [],
+      "importsAfter": [
+        "express"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/database-config.mjs",
+      "responsibility": "Verified PostgreSQL TLS, Supabase CA, pool configuration",
+      "target": "backend/src/database-config.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:fs",
+        "node:path",
+        "node:tls",
+        "./env.mjs"
+      ],
+      "importsAfter": [
+        "node:fs",
+        "node:path",
+        "node:tls",
+        "./env.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/db.mjs",
+      "responsibility": "Prisma PostgreSQL adapter and serializable transaction retries",
+      "target": "backend/src/db.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "./env.mjs",
+        "@prisma/client",
+        "@prisma/adapter-pg",
+        "./database-config.mjs"
+      ],
+      "importsAfter": [
+        "@prisma/client",
+        "./env.ts",
+        "@prisma/client",
+        "@prisma/adapter-pg",
+        "./database-config.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/env.mjs",
+      "responsibility": "Workspace-relative environment loading and required settings",
+      "target": "backend/src/env.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "dotenv",
+        "node:url",
+        "node:path"
+      ],
+      "importsAfter": [
+        "dotenv",
+        "node:url",
+        "node:path"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "backend/src/index.mjs",
+      "responsibility": "Mode selection, local startup, Vercel default export",
+      "target": "backend/src/index.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "./env.mjs",
+        "./app.mjs",
+        "./legacy.mjs"
+      ],
+      "importsAfter": [
+        "./env.ts",
+        "express",
+        "./app.ts",
+        "./legacy.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/legacy.mjs",
+      "responsibility": "Local mock HTTP API, filesystem demo accounts/sessions/catalog/orders and static serving",
+      "target": "backend/src/legacy.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:http",
+        "node:fs",
+        "node:path",
+        "node:crypto",
+        "node:url",
+        "./env.mjs",
+        "./catalog.mjs"
+      ],
+      "importsAfter": [
+        "node:http",
+        "node:http",
+        "node:fs",
+        "node:path",
+        "node:crypto",
+        "node:url",
+        "./env.ts",
+        "./catalog.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/migration-history.mjs",
+      "responsibility": "SQL checksums preserving Windows/Linux line ending compatibility",
+      "target": "backend/src/migration-history.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:crypto"
+      ],
+      "importsAfter": [
+        "node:crypto"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "backend/src/order-events.mjs",
+      "responsibility": "Persisted order history, operator/customer notifications and Realtime store events",
+      "target": "backend/src/order-events.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [],
+      "importsAfter": [
+        "./types.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/orders.mjs",
+      "responsibility": "Checkout, reservation, counter/COD settlement, digital demos, fulfillment and cancellation",
+      "target": "backend/src/orders.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:crypto",
+        "./db.mjs",
+        "./validation.mjs",
+        "./commerce.mjs",
+        "./checkout-rules.mjs",
+        "./order-events.mjs"
+      ],
+      "importsAfter": [
+        "@prisma/client",
+        "zod",
+        "./checkout-rules.ts",
+        "./types.ts",
+        "node:crypto",
+        "./db.ts",
+        "./validation.ts",
+        "./commerce.ts",
+        "./checkout-rules.ts",
+        "./order-events.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/products.mjs",
+      "responsibility": "Idempotent product creation with opening-stock movement",
+      "target": "backend/src/products.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:crypto",
+        "./db.mjs",
+        "./commerce.mjs"
+      ],
+      "importsAfter": [
+        "zod",
+        "./validation.ts",
+        "./types.ts",
+        "node:crypto",
+        "./db.ts",
+        "./commerce.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/supabase.mjs",
+      "responsibility": "Server-only Supabase Auth/Storage client",
+      "target": "backend/src/supabase.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "@supabase/supabase-js",
+        "./env.mjs"
+      ],
+      "importsAfter": [
+        "@supabase/supabase-js",
+        "./env.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/src/validation.mjs",
+      "responsibility": "Zod product/sale validation, cents, totals, retry equivalence and HTTP failures",
+      "target": "backend/src/validation.ts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "zod"
+      ],
+      "importsAfter": [
+        "./types.ts",
+        "zod"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/account-access.test.mjs",
+      "responsibility": "Verification: account-access.test.mjs",
+      "target": "backend/tests/account-access.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "../src/account-access.mjs"
+      ],
+      "importsAfter": [
+        "../src/types.ts",
+        "node:test",
+        "node:assert/strict",
+        "../src/account-access.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/api-errors.test.mjs",
+      "responsibility": "Verification: api-errors.test.mjs",
+      "target": "backend/tests/api-errors.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "multer",
+        "../src/api-errors.mjs"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "multer",
+        "../src/api-errors.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/cart-rules.test.mjs",
+      "responsibility": "Verification: cart-rules.test.mjs",
+      "target": "backend/tests/cart-rules.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "../src/cart-rules.mjs"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "../src/cart-rules.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/checkout-rules.test.mjs",
+      "responsibility": "Verification: checkout-rules.test.mjs",
+      "target": "backend/tests/checkout-rules.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "../src/checkout-rules.mjs"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "../src/checkout-rules.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/cors.test.mjs",
+      "responsibility": "Verification: cors.test.mjs",
+      "target": "backend/tests/cors.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "express",
+        "../src/cors.mjs"
+      ],
+      "importsAfter": [
+        "node:net",
+        "node:test",
+        "node:assert/strict",
+        "express",
+        "../src/cors.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/deployment.test.mjs",
+      "responsibility": "Verification: deployment.test.mjs",
+      "target": "backend/tests/deployment.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:child_process"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "node:child_process"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "backend/tests/helpers/live-fixture.mjs",
+      "responsibility": "Verification: live-fixture.mjs",
+      "target": "backend/tests/helpers/live-fixture.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "../../src/env.mjs",
+        "node:crypto",
+        "@supabase/supabase-js",
+        "../../src/db.mjs",
+        "../../src/supabase.mjs"
+      ],
+      "importsAfter": [
+        "@supabase/supabase-js",
+        "../../src/env.ts",
+        "node:crypto",
+        "@supabase/supabase-js",
+        "../../src/db.ts",
+        "../../src/supabase.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/integration/checkout.test.mjs",
+      "responsibility": "Verification: checkout.test.mjs",
+      "target": "backend/tests/integration/checkout.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "../../src/app.mjs",
+        "../../src/db.mjs",
+        "../helpers/live-fixture.mjs"
+      ],
+      "importsAfter": [
+        "node:http",
+        "../helpers/live-fixture.mts",
+        "../helpers/api-types.ts",
+        "node:net",
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "../../src/app.ts",
+        "../../src/db.ts",
+        "../helpers/live-fixture.mts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/integration/commerce.test.mjs",
+      "responsibility": "Verification: commerce.test.mjs",
+      "target": "backend/tests/integration/commerce.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "node:fs/promises",
+        "node:path",
+        "../helpers/live-fixture.mjs",
+        "../../src/env.mjs",
+        "../../src/app.mjs",
+        "../../src/db.mjs"
+      ],
+      "importsAfter": [
+        "node:http",
+        "../helpers/live-fixture.mts",
+        "../helpers/api-types.ts",
+        "node:net",
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "node:fs/promises",
+        "node:path",
+        "../helpers/live-fixture.mts",
+        "../../src/env.ts",
+        "../../src/app.ts",
+        "../../src/db.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/integration/retries.test.mjs",
+      "responsibility": "Verification: retries.test.mjs",
+      "target": "backend/tests/integration/retries.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "../helpers/live-fixture.mjs",
+        "../../src/db.mjs",
+        "../../src/app.mjs"
+      ],
+      "importsAfter": [
+        "node:http",
+        "../helpers/api-types.ts",
+        "node:net",
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "../helpers/live-fixture.mts",
+        "../../src/db.ts",
+        "../../src/app.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/integration/signup.test.mjs",
+      "responsibility": "Verification: signup.test.mjs",
+      "target": "backend/tests/integration/signup.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "pg",
+        "../../src/database-config.mjs"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "pg",
+        "../../src/database-config.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/migration-history.test.mjs",
+      "responsibility": "Verification: migration-history.test.mjs",
+      "target": "backend/tests/migration-history.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "../src/migration-history.mjs"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "../src/migration-history.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/server-validation.test.mjs",
+      "responsibility": "Verification: server-validation.test.mjs",
+      "target": "backend/tests/server-validation.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "../src/validation.mjs"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "../src/validation.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "backend/tests/startup-outage.test.mjs",
+      "responsibility": "Verification: startup-outage.test.mjs",
+      "target": "backend/tests/startup-outage.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:child_process",
+        "node:events"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "node:child_process",
+        "node:events"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "eslint.config.js",
+      "responsibility": "Tool configuration",
+      "target": "eslint.config.js",
+      "status": "retained: ESLint native configuration; no TypeScript loader dependency required",
+      "importsBefore": [
+        "@eslint/js",
+        "globals",
+        "eslint-plugin-react-hooks",
+        "eslint-plugin-react-refresh",
+        "typescript-eslint",
+        "eslint/config"
+      ],
+      "importsAfter": [
+        "@eslint/js",
+        "globals",
+        "eslint-plugin-react-hooks",
+        "eslint-plugin-react-refresh",
+        "typescript-eslint",
+        "eslint/config"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/api-proxy.ts",
+      "responsibility": "Tool configuration",
+      "target": "frontend/api-proxy.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "vite"
+      ],
+      "importsAfter": [
+        "vite"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/scripts/capture-section.mjs",
+      "responsibility": "Operator/development utility: capture-section.mjs",
+      "target": "frontend/scripts/capture-section.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path"
+      ],
+      "importsAfter": [
+        "../tests/protocol.ts",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/scripts/download-payment-branding.mjs",
+      "responsibility": "Operator/development utility: download-payment-branding.mjs",
+      "target": "frontend/scripts/download-payment-branding.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:fs/promises",
+        "node:path"
+      ],
+      "importsAfter": [
+        "node:fs/promises",
+        "node:path"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/scripts/seed-catalog.mjs",
+      "responsibility": "Operator/development utility: seed-catalog.mjs",
+      "target": "frontend/scripts/seed-catalog.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:fs"
+      ],
+      "importsAfter": [
+        "node:fs"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/App.tsx",
+      "responsibility": "Frontend module: App.tsx",
+      "target": "frontend/src/App.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "./app/App",
+        "./App.css"
+      ],
+      "importsAfter": [
+        "./app/App",
+        "./App.css"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/animations/MotionProvider.tsx",
+      "responsibility": "Frontend module: animations/MotionProvider.tsx",
+      "target": "frontend/src/animations/MotionProvider.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "react",
+        "./transitions"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "react",
+        "./transitions"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/animations/PageTransition.tsx",
+      "responsibility": "Frontend module: animations/PageTransition.tsx",
+      "target": "frontend/src/animations/PageTransition.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "react",
+        "./variants"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "react",
+        "./variants"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/animations/ScrollReveal.tsx",
+      "responsibility": "Frontend module: animations/ScrollReveal.tsx",
+      "target": "frontend/src/animations/ScrollReveal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "react",
+        "./variants"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "react",
+        "./variants"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/animations/StaggerContainer.tsx",
+      "responsibility": "Frontend module: animations/StaggerContainer.tsx",
+      "target": "frontend/src/animations/StaggerContainer.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "react",
+        "./variants"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "react",
+        "./variants"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/animations/easing.ts",
+      "responsibility": "Frontend module: animations/easing.ts",
+      "target": "frontend/src/animations/easing.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/animations/loaderVariants.ts",
+      "responsibility": "Frontend module: animations/loaderVariants.ts",
+      "target": "frontend/src/animations/loaderVariants.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "./easing"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "./easing"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/animations/transitions.ts",
+      "responsibility": "Frontend module: animations/transitions.ts",
+      "target": "frontend/src/animations/transitions.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react"
+      ],
+      "importsAfter": [
+        "motion/react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/animations/variants.ts",
+      "responsibility": "Frontend module: animations/variants.ts",
+      "target": "frontend/src/animations/variants.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "./transitions"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "./transitions"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/app/App.tsx",
+      "responsibility": "Frontend module: app/App.tsx",
+      "target": "frontend/src/app/App.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react-router-dom",
+        "../contexts/AuthContext",
+        "../contexts/ThemeContext",
+        "../animations/MotionProvider",
+        "./router"
+      ],
+      "importsAfter": [
+        "react-router-dom",
+        "../contexts/AuthContext",
+        "../contexts/ThemeContext",
+        "../animations/MotionProvider",
+        "./router"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/app/router.tsx",
+      "responsibility": "Frontend module: app/router.tsx",
+      "target": "frontend/src/app/router.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../pages/dashboard/PeoplePage",
+        "../pages/public/AboutPage",
+        "../pages/public/AuthCallbackPage",
+        "../pages/public/ResetPasswordPage",
+        "../pages/dashboard/PosPage",
+        "../pages/dashboard/InventoryPage",
+        "../pages/dashboard/ReportsPage",
+        "../pages/dashboard/OrdersPage",
+        "../pages/dashboard/SettingsPage",
+        "../pages/dashboard/ProfilePage",
+        "react-router-dom",
+        "../components/CommerceSync",
+        "../contexts/CartContext",
+        "../components/auth/GuestRoute",
+        "../components/auth/ProtectedRoute",
+        "../features/auth/AuthPage",
+        "../layouts/CustomerLayout",
+        "../layouts/OwnerLayout",
+        "../layouts/PublicLayout",
+        "../layouts/StaffLayout",
+        "../pages/dashboard/RoleDashboardPage",
+        "../pages/dashboard/CustomerOrdersPage",
+        "../pages/dashboard/OrderDetailsPage",
+        "../pages/errors/NotFoundPage",
+        "../pages/errors/UnauthorizedPage",
+        "../pages/public/HomePage",
+        "../pages/public/ProductCatalogPage",
+        "../pages/public/ProductDetailsPage",
+        "../pages/public/CartPage",
+        "../pages/public/CheckoutPaymentPage"
+      ],
+      "importsAfter": [
+        "../pages/dashboard/PeoplePage",
+        "../pages/public/AboutPage",
+        "../pages/public/AuthCallbackPage",
+        "../pages/public/ResetPasswordPage",
+        "../pages/dashboard/PosPage",
+        "../pages/dashboard/InventoryPage",
+        "../pages/dashboard/ReportsPage",
+        "../pages/dashboard/OrdersPage",
+        "../pages/dashboard/SettingsPage",
+        "../pages/dashboard/ProfilePage",
+        "react-router-dom",
+        "../components/CommerceSync",
+        "../contexts/CartContext",
+        "../components/auth/GuestRoute",
+        "../components/auth/ProtectedRoute",
+        "../features/auth/AuthPage",
+        "../layouts/CustomerLayout",
+        "../layouts/OwnerLayout",
+        "../layouts/PublicLayout",
+        "../layouts/StaffLayout",
+        "../pages/dashboard/RoleDashboardPage",
+        "../pages/dashboard/CustomerOrdersPage",
+        "../pages/dashboard/OrderDetailsPage",
+        "../pages/errors/NotFoundPage",
+        "../pages/errors/UnauthorizedPage",
+        "../pages/public/HomePage",
+        "../pages/public/ProductCatalogPage",
+        "../pages/public/ProductDetailsPage",
+        "../pages/public/CartPage",
+        "../pages/public/CheckoutPaymentPage"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/BrandMark.tsx",
+      "responsibility": "React component: components/BrandMark.tsx",
+      "target": "frontend/src/components/BrandMark.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react"
+      ],
+      "importsAfter": [
+        "lucide-react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/CommerceSync.tsx",
+      "responsibility": "React component: components/CommerceSync.tsx",
+      "target": "frontend/src/components/CommerceSync.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../hooks/useAuth",
+        "../services/supabaseClient",
+        "../services/remote/cache",
+        "react-router-dom"
+      ],
+      "importsAfter": [
+        "react",
+        "../hooks/useAuth",
+        "../services/supabaseClient",
+        "../services/remote/cache",
+        "react-router-dom"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/ThemeToggle.tsx",
+      "responsibility": "React component: components/ThemeToggle.tsx",
+      "target": "frontend/src/components/ThemeToggle.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "../types/auth"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "../types/auth"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/auth/GuestRoute.tsx",
+      "responsibility": "React component: components/auth/GuestRoute.tsx",
+      "target": "frontend/src/components/auth/GuestRoute.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../types/roles"
+      ],
+      "importsAfter": [
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../types/roles"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/auth/ProtectedRoute.tsx",
+      "responsibility": "React component: components/auth/ProtectedRoute.tsx",
+      "target": "frontend/src/components/auth/ProtectedRoute.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../types/roles"
+      ],
+      "importsAfter": [
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../types/roles"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/catalog/ProductCard.tsx",
+      "responsibility": "React component: components/catalog/ProductCard.tsx",
+      "target": "frontend/src/components/catalog/ProductCard.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../hooks/useCart",
+        "../../types/product",
+        "../../services/money",
+        "./ProductVisual",
+        "../ui/Modal",
+        "../pos/QuantityControl"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../hooks/useCart",
+        "../../types/product",
+        "../../services/money",
+        "./ProductVisual",
+        "../ui/Modal",
+        "../pos/QuantityControl"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/catalog/ProductImage.tsx",
+      "responsibility": "React component: components/catalog/ProductImage.tsx",
+      "target": "frontend/src/components/catalog/ProductImage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../../services/productImages"
+      ],
+      "importsAfter": [
+        "react",
+        "../../services/productImages"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/catalog/ProductVisual.tsx",
+      "responsibility": "React component: components/catalog/ProductVisual.tsx",
+      "target": "frontend/src/components/catalog/ProductVisual.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/product",
+        "./ProductImage"
+      ],
+      "importsAfter": [
+        "../../types/product",
+        "./ProductImage"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/checkout/PaymentMark.tsx",
+      "responsibility": "React component: components/checkout/PaymentMark.tsx",
+      "target": "frontend/src/components/checkout/PaymentMark.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "../../services/checkout"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "../../services/checkout"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/inventory/CategoryModal.tsx",
+      "responsibility": "React component: components/inventory/CategoryModal.tsx",
+      "target": "frontend/src/components/inventory/CategoryModal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../../types/auth",
+        "../../services",
+        "../../hooks/useProducts",
+        "../ui/Modal"
+      ],
+      "importsAfter": [
+        "react",
+        "../../types/auth",
+        "../../services",
+        "../../hooks/useProducts",
+        "../ui/Modal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/inventory/ProductEditModal.tsx",
+      "responsibility": "React component: components/inventory/ProductEditModal.tsx",
+      "target": "frontend/src/components/inventory/ProductEditModal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../../types/product",
+        "../../types/auth",
+        "../../services",
+        "../../services/products/productManagementService",
+        "../catalog/ProductImage",
+        "../ui/Modal",
+        "../../data/productImages.json",
+        "../../services/productImages"
+      ],
+      "importsAfter": [
+        "react",
+        "../../types/product",
+        "../../types/auth",
+        "../../services",
+        "../../services/products/productManagementService",
+        "../catalog/ProductImage",
+        "../ui/Modal",
+        "../../data/productImages.json",
+        "../../services/productImages"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/inventory/StockAdjustmentModal.tsx",
+      "responsibility": "React component: components/inventory/StockAdjustmentModal.tsx",
+      "target": "frontend/src/components/inventory/StockAdjustmentModal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../../types/auth",
+        "../../services",
+        "../ui/Modal"
+      ],
+      "importsAfter": [
+        "react",
+        "../../types/auth",
+        "../../services",
+        "../ui/Modal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/CategorySection.tsx",
+      "responsibility": "React component: components/landing/CategorySection.tsx",
+      "target": "frontend/src/components/landing/CategorySection.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react-router-dom",
+        "../../animations/StaggerContainer",
+        "../../data/landingContent",
+        "./SectionHeading",
+        "../../hooks/useProducts",
+        "../../services"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react-router-dom",
+        "../../animations/StaggerContainer",
+        "../../data/landingContent",
+        "./SectionHeading",
+        "../../hooks/useProducts",
+        "../../services"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/EditorialIntro.tsx",
+      "responsibility": "React component: components/landing/EditorialIntro.tsx",
+      "target": "frontend/src/components/landing/EditorialIntro.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../animations/ScrollReveal",
+        "../motion/MaskedText"
+      ],
+      "importsAfter": [
+        "../../animations/ScrollReveal",
+        "../motion/MaskedText"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/FaqSection.tsx",
+      "responsibility": "React component: components/landing/FaqSection.tsx",
+      "target": "frontend/src/components/landing/FaqSection.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "../../data/landingContent",
+        "./SectionHeading"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "../../data/landingContent",
+        "./SectionHeading"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/FeatureTabs.tsx",
+      "responsibility": "React component: components/landing/FeatureTabs.tsx",
+      "target": "frontend/src/components/landing/FeatureTabs.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "../../data/landingContent",
+        "./SectionHeading"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "../../data/landingContent",
+        "./SectionHeading"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/FeaturedProducts.tsx",
+      "responsibility": "React component: components/landing/FeaturedProducts.tsx",
+      "target": "frontend/src/components/landing/FeaturedProducts.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "react-router-dom",
+        "../../animations/StaggerContainer",
+        "../../hooks/useProducts",
+        "../catalog/ProductImage",
+        "../../hooks/useCart",
+        "./SectionHeading"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "react-router-dom",
+        "../../animations/StaggerContainer",
+        "../../hooks/useProducts",
+        "../catalog/ProductImage",
+        "../../hooks/useCart",
+        "./SectionHeading"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/HomeHero.tsx",
+      "responsibility": "React component: components/landing/HomeHero.tsx",
+      "target": "frontend/src/components/landing/HomeHero.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "motion/react",
+        "react-router-dom",
+        "../motion/SplitTextReveal"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "motion/react",
+        "react-router-dom",
+        "../motion/SplitTextReveal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/LandingStorySections.tsx",
+      "responsibility": "React component: components/landing/LandingStorySections.tsx",
+      "target": "frontend/src/components/landing/LandingStorySections.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react-router-dom",
+        "../../animations/ScrollReveal",
+        "../../animations/StaggerContainer",
+        "../../data/landingContent",
+        "./SectionHeading"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react-router-dom",
+        "../../animations/ScrollReveal",
+        "../../animations/StaggerContainer",
+        "../../data/landingContent",
+        "./SectionHeading"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/SectionHeading.tsx",
+      "responsibility": "React component: components/landing/SectionHeading.tsx",
+      "target": "frontend/src/components/landing/SectionHeading.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/landing/StickyStory.tsx",
+      "responsibility": "React component: components/landing/StickyStory.tsx",
+      "target": "frontend/src/components/landing/StickyStory.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "react-router-dom",
+        "../../animations/easing"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "react-router-dom",
+        "../../animations/easing"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/loader/AscentLoader.tsx",
+      "responsibility": "React component: components/loader/AscentLoader.tsx",
+      "target": "frontend/src/components/loader/AscentLoader.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "../../animations/loaderVariants",
+        "./LogoReveal"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "../../animations/loaderVariants",
+        "./LogoReveal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/loader/LogoReveal.tsx",
+      "responsibility": "React component: components/loader/LogoReveal.tsx",
+      "target": "frontend/src/components/loader/LogoReveal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "../../animations/loaderVariants"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "../../animations/loaderVariants"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/motion/MaskedText.tsx",
+      "responsibility": "React component: components/motion/MaskedText.tsx",
+      "target": "frontend/src/components/motion/MaskedText.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "react",
+        "../../animations/easing"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "react",
+        "../../animations/easing"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/motion/ParallaxImage.tsx",
+      "responsibility": "React component: components/motion/ParallaxImage.tsx",
+      "target": "frontend/src/components/motion/ParallaxImage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react",
+        "react"
+      ],
+      "importsAfter": [
+        "motion/react",
+        "react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/motion/SplitTextReveal.tsx",
+      "responsibility": "React component: components/motion/SplitTextReveal.tsx",
+      "target": "frontend/src/components/motion/SplitTextReveal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "./MaskedText"
+      ],
+      "importsAfter": [
+        "./MaskedText"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/navigation/BackToTop.tsx",
+      "responsibility": "React component: components/navigation/BackToTop.tsx",
+      "target": "frontend/src/components/navigation/BackToTop.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "motion/react",
+        "react"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "motion/react",
+        "react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/navigation/DashboardShell.tsx",
+      "responsibility": "React component: components/navigation/DashboardShell.tsx",
+      "target": "frontend/src/components/navigation/DashboardShell.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../BrandMark",
+        "../ThemeToggle",
+        "../../hooks/useAuth",
+        "../../hooks/useAppTheme",
+        "../../types/roles",
+        "./OrderNotifications"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../BrandMark",
+        "../ThemeToggle",
+        "../../hooks/useAuth",
+        "../../hooks/useAppTheme",
+        "../../types/roles",
+        "./OrderNotifications"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/navigation/OrderNotifications.tsx",
+      "responsibility": "React component: components/navigation/OrderNotifications.tsx",
+      "target": "frontend/src/components/navigation/OrderNotifications.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services/remote/cache",
+        "../../services/checkout",
+        "../../services/supabaseClient"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services/remote/cache",
+        "../../services/checkout",
+        "../../services/supabaseClient"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/navigation/PublicNavbar.tsx",
+      "responsibility": "React component: components/navigation/PublicNavbar.tsx",
+      "target": "frontend/src/components/navigation/PublicNavbar.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useCart",
+        "../../types/roles",
+        "../BrandMark",
+        "../ThemeToggle",
+        "../../hooks/useAppTheme"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "motion/react",
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useCart",
+        "../../types/roles",
+        "../BrandMark",
+        "../ThemeToggle",
+        "../../hooks/useAppTheme"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/navigation/ScrollProgress.tsx",
+      "responsibility": "React component: components/navigation/ScrollProgress.tsx",
+      "target": "frontend/src/components/navigation/ScrollProgress.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "motion/react"
+      ],
+      "importsAfter": [
+        "motion/react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/pos/BillingPanel.tsx",
+      "responsibility": "React component: components/pos/BillingPanel.tsx",
+      "target": "frontend/src/components/pos/BillingPanel.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "../../types/product",
+        "../../types/commerce",
+        "../../services/money",
+        "../catalog/ProductImage",
+        "./QuantityControl",
+        "../../services/supabaseClient",
+        "../../services/remote/cache"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "../../types/product",
+        "../../types/commerce",
+        "../../services/money",
+        "../catalog/ProductImage",
+        "./QuantityControl",
+        "../../services/supabaseClient",
+        "../../services/remote/cache"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/pos/CameraScannerModal.tsx",
+      "responsibility": "React component: components/pos/CameraScannerModal.tsx",
+      "target": "frontend/src/components/pos/CameraScannerModal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../ui/Modal",
+        "@zxing/browser"
+      ],
+      "importsAfter": [
+        "react",
+        "../ui/Modal",
+        "@zxing/browser"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/pos/PaymentModal.tsx",
+      "responsibility": "React component: components/pos/PaymentModal.tsx",
+      "target": "frontend/src/components/pos/PaymentModal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "../../types/commerce",
+        "../../services",
+        "../../services/money",
+        "../ui/Modal"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "../../types/commerce",
+        "../../services",
+        "../../services/money",
+        "../ui/Modal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/pos/QuantityControl.tsx",
+      "responsibility": "React component: components/pos/QuantityControl.tsx",
+      "target": "frontend/src/components/pos/QuantityControl.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react"
+      ],
+      "importsAfter": [
+        "lucide-react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/pos/ReceiptPreview.tsx",
+      "responsibility": "React component: components/pos/ReceiptPreview.tsx",
+      "target": "frontend/src/components/pos/ReceiptPreview.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "../../types/commerce",
+        "../../services/money",
+        "../../services",
+        "../../services/supabaseClient",
+        "../ui/Modal"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "../../types/commerce",
+        "../../services/money",
+        "../../services",
+        "../../services/supabaseClient",
+        "../ui/Modal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/reports/BarChart.tsx",
+      "responsibility": "React component: components/reports/BarChart.tsx",
+      "target": "frontend/src/components/reports/BarChart.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../services/money"
+      ],
+      "importsAfter": [
+        "../../services/money"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/reports/SalesTable.tsx",
+      "responsibility": "React component: components/reports/SalesTable.tsx",
+      "target": "frontend/src/components/reports/SalesTable.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/commerce",
+        "../../services/money"
+      ],
+      "importsAfter": [
+        "../../types/commerce",
+        "../../services/money"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/ui/Button.tsx",
+      "responsibility": "React component: components/ui/Button.tsx",
+      "target": "frontend/src/components/ui/Button.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react"
+      ],
+      "importsAfter": [
+        "react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/components/ui/Modal.tsx",
+      "responsibility": "React component: components/ui/Modal.tsx",
+      "target": "frontend/src/components/ui/Modal.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "react-dom",
+        "lucide-react"
+      ],
+      "importsAfter": [
+        "react",
+        "react-dom",
+        "lucide-react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/contexts/AuthContext.tsx",
+      "responsibility": "React provider/context and state: contexts/AuthContext.tsx",
+      "target": "frontend/src/contexts/AuthContext.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../types/auth",
+        "../types/roles",
+        "../services/api",
+        "./authContextValue",
+        "../services/supabaseClient"
+      ],
+      "importsAfter": [
+        "react",
+        "../types/auth",
+        "../types/roles",
+        "../services/api",
+        "./authContextValue",
+        "../services/supabaseClient"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/contexts/CartContext.tsx",
+      "responsibility": "React provider/context and state: contexts/CartContext.tsx",
+      "target": "frontend/src/contexts/CartContext.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "./cartContextValue",
+        "../services",
+        "../services/storage/mockStorage",
+        "../hooks/useProducts",
+        "../hooks/useAuth",
+        "../services/supabaseClient",
+        "./RemoteCartContext"
+      ],
+      "importsAfter": [
+        "react",
+        "./cartContextValue",
+        "../services",
+        "../services/storage/mockStorage",
+        "../hooks/useProducts",
+        "../hooks/useAuth",
+        "../services/supabaseClient",
+        "./RemoteCartContext"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/contexts/RemoteCartContext.tsx",
+      "responsibility": "React provider/context and state: contexts/RemoteCartContext.tsx",
+      "target": "frontend/src/contexts/RemoteCartContext.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "./cartContextValue",
+        "../hooks/useProducts",
+        "../services/remote/cache",
+        "../services/storage/mockStorage",
+        "../services/supabaseClient"
+      ],
+      "importsAfter": [
+        "react",
+        "./cartContextValue",
+        "../hooks/useProducts",
+        "../services/remote/cache",
+        "../services/storage/mockStorage",
+        "../services/supabaseClient"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/contexts/ThemeContext.tsx",
+      "responsibility": "React provider/context and state: contexts/ThemeContext.tsx",
+      "target": "frontend/src/contexts/ThemeContext.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../hooks/useTheme",
+        "./themeContextValue"
+      ],
+      "importsAfter": [
+        "react",
+        "../hooks/useTheme",
+        "./themeContextValue"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/contexts/authContextValue.ts",
+      "responsibility": "React provider/context and state: contexts/authContextValue.ts",
+      "target": "frontend/src/contexts/authContextValue.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../types/auth",
+        "../types/roles"
+      ],
+      "importsAfter": [
+        "react",
+        "../types/auth",
+        "../types/roles"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/contexts/cartContextValue.ts",
+      "responsibility": "React provider/context and state: contexts/cartContextValue.ts",
+      "target": "frontend/src/contexts/cartContextValue.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react"
+      ],
+      "importsAfter": [
+        "react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/contexts/themeContextValue.ts",
+      "responsibility": "React provider/context and state: contexts/themeContextValue.ts",
+      "target": "frontend/src/contexts/themeContextValue.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../hooks/useTheme"
+      ],
+      "importsAfter": [
+        "react",
+        "../hooks/useTheme"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/data/authContent.ts",
+      "responsibility": "Frontend module: data/authContent.ts",
+      "target": "frontend/src/data/authContent.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../types/auth"
+      ],
+      "importsAfter": [
+        "../types/auth"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/data/grocerySeed.ts",
+      "responsibility": "Frontend module: data/grocerySeed.ts",
+      "target": "frontend/src/data/grocerySeed.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../types/product"
+      ],
+      "importsAfter": [
+        "../types/product"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/data/landingContent.ts",
+      "responsibility": "Frontend module: data/landingContent.ts",
+      "target": "frontend/src/data/landingContent.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react"
+      ],
+      "importsAfter": [
+        "lucide-react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/features/auth/AuthForm.tsx",
+      "responsibility": "Frontend module: features/auth/AuthForm.tsx",
+      "target": "frontend/src/features/auth/AuthForm.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../services/supabaseClient",
+        "lucide-react",
+        "motion/react",
+        "react",
+        "react-router-dom",
+        "../../data/authContent",
+        "../../types/auth",
+        "../../types/roles",
+        "../../components/ui/Button",
+        "../../hooks/useAuth"
+      ],
+      "importsAfter": [
+        "../../services/supabaseClient",
+        "lucide-react",
+        "motion/react",
+        "react",
+        "react-router-dom",
+        "../../data/authContent",
+        "../../types/auth",
+        "../../types/roles",
+        "../../components/ui/Button",
+        "../../hooks/useAuth"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/features/auth/AuthPage.tsx",
+      "responsibility": "Frontend module: features/auth/AuthPage.tsx",
+      "target": "frontend/src/features/auth/AuthPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../../types/roles",
+        "./AuthForm",
+        "./AuthStory"
+      ],
+      "importsAfter": [
+        "react",
+        "../../types/roles",
+        "./AuthForm",
+        "./AuthStory"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/features/auth/AuthStory.tsx",
+      "responsibility": "Frontend module: features/auth/AuthStory.tsx",
+      "target": "frontend/src/features/auth/AuthStory.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "../../components/BrandMark",
+        "../../components/motion/SplitTextReveal"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "../../components/BrandMark",
+        "../../components/motion/SplitTextReveal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/features/auth/ProductStory.tsx",
+      "responsibility": "Frontend module: features/auth/ProductStory.tsx",
+      "target": "frontend/src/features/auth/ProductStory.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../data/authContent",
+        "../../components/BrandMark"
+      ],
+      "importsAfter": [
+        "../../data/authContent",
+        "../../components/BrandMark"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/features/auth/SystemPreview.tsx",
+      "responsibility": "Frontend module: features/auth/SystemPreview.tsx",
+      "target": "frontend/src/features/auth/SystemPreview.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/hooks/useAppTheme.ts",
+      "responsibility": "React hook: hooks/useAppTheme.ts",
+      "target": "frontend/src/hooks/useAppTheme.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../contexts/themeContextValue"
+      ],
+      "importsAfter": [
+        "react",
+        "../contexts/themeContextValue"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/hooks/useAuth.ts",
+      "responsibility": "React hook: hooks/useAuth.ts",
+      "target": "frontend/src/hooks/useAuth.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../contexts/authContextValue"
+      ],
+      "importsAfter": [
+        "react",
+        "../contexts/authContextValue"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/hooks/useCart.ts",
+      "responsibility": "React hook: hooks/useCart.ts",
+      "target": "frontend/src/hooks/useCart.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../contexts/cartContextValue"
+      ],
+      "importsAfter": [
+        "react",
+        "../contexts/cartContextValue"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/hooks/useInitialLoader.ts",
+      "responsibility": "React hook: hooks/useInitialLoader.ts",
+      "target": "frontend/src/hooks/useInitialLoader.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "motion/react"
+      ],
+      "importsAfter": [
+        "react",
+        "motion/react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/hooks/useProducts.ts",
+      "responsibility": "React hook: hooks/useProducts.ts",
+      "target": "frontend/src/hooks/useProducts.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../services",
+        "../services/products/productService"
+      ],
+      "importsAfter": [
+        "react",
+        "../services",
+        "../services/products/productService"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/hooks/useTheme.ts",
+      "responsibility": "React hook: hooks/useTheme.ts",
+      "target": "frontend/src/hooks/useTheme.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../services/storage/mockStorage",
+        "react",
+        "../types/auth"
+      ],
+      "importsAfter": [
+        "../services/storage/mockStorage",
+        "react",
+        "../types/auth"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/layouts/CustomerLayout.tsx",
+      "responsibility": "Frontend module: layouts/CustomerLayout.tsx",
+      "target": "frontend/src/layouts/CustomerLayout.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "../components/navigation/DashboardShell"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "../components/navigation/DashboardShell"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/layouts/OwnerLayout.tsx",
+      "responsibility": "Frontend module: layouts/OwnerLayout.tsx",
+      "target": "frontend/src/layouts/OwnerLayout.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "../components/navigation/DashboardShell"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "../components/navigation/DashboardShell"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/layouts/PublicLayout.tsx",
+      "responsibility": "Frontend module: layouts/PublicLayout.tsx",
+      "target": "frontend/src/layouts/PublicLayout.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react-router-dom",
+        "react-router-dom",
+        "motion/react",
+        "react",
+        "../components/BrandMark",
+        "../components/navigation/BackToTop",
+        "../components/navigation/PublicNavbar",
+        "../components/navigation/ScrollProgress",
+        "../components/loader/AscentLoader",
+        "../hooks/useInitialLoader",
+        "../services/api"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react-router-dom",
+        "react-router-dom",
+        "motion/react",
+        "react",
+        "../components/BrandMark",
+        "../components/navigation/BackToTop",
+        "../components/navigation/PublicNavbar",
+        "../components/navigation/ScrollProgress",
+        "../components/loader/AscentLoader",
+        "../hooks/useInitialLoader",
+        "../services/api"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/layouts/StaffLayout.tsx",
+      "responsibility": "Frontend module: layouts/StaffLayout.tsx",
+      "target": "frontend/src/layouts/StaffLayout.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "../components/navigation/DashboardShell"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "../components/navigation/DashboardShell"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/lib/supabase.ts",
+      "responsibility": "Frontend module: lib/supabase.ts",
+      "target": "frontend/src/lib/supabase.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../services/supabaseClient"
+      ],
+      "importsAfter": [
+        "../services/supabaseClient"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "responsibility": "Frontend module: main.tsx",
+      "target": "frontend/src/main.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "react-dom/client",
+        "./index.css",
+        "./styles/checkout.css",
+        "./App.tsx"
+      ],
+      "importsAfter": [
+        "react",
+        "react-dom/client",
+        "./index.css",
+        "./styles/checkout.css",
+        "./App.tsx"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/CustomerOrdersPage.tsx",
+      "responsibility": "Route page: pages/dashboard/CustomerOrdersPage.tsx",
+      "target": "frontend/src/pages/dashboard/CustomerOrdersPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "./OrdersPage"
+      ],
+      "importsAfter": [
+        "./OrdersPage"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/InventoryPage.tsx",
+      "responsibility": "Route page: pages/dashboard/InventoryPage.tsx",
+      "target": "frontend/src/pages/dashboard/InventoryPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../components/inventory/CategoryModal",
+        "react",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../components/catalog/ProductImage",
+        "../../components/inventory/StockAdjustmentModal",
+        "../../components/inventory/ProductEditModal"
+      ],
+      "importsAfter": [
+        "../../components/inventory/CategoryModal",
+        "react",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../components/catalog/ProductImage",
+        "../../components/inventory/StockAdjustmentModal",
+        "../../components/inventory/ProductEditModal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/OrderDetailsPage.tsx",
+      "responsibility": "Route page: pages/dashboard/OrderDetailsPage.tsx",
+      "target": "frontend/src/pages/dashboard/OrderDetailsPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/checkout",
+        "../../services/money"
+      ],
+      "importsAfter": [
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/checkout",
+        "../../services/money"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/OrdersPage.tsx",
+      "responsibility": "Route page: pages/dashboard/OrdersPage.tsx",
+      "target": "frontend/src/pages/dashboard/OrdersPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../services/checkout",
+        "../../services/supabaseClient",
+        "../../types/product",
+        "../../types/commerce",
+        "../../components/pos/ReceiptPreview",
+        "../../components/checkout/PaymentMark",
+        "../../components/ui/Modal",
+        "../../services/api"
+      ],
+      "importsAfter": [
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../services/checkout",
+        "../../services/supabaseClient",
+        "../../types/product",
+        "../../types/commerce",
+        "../../components/pos/ReceiptPreview",
+        "../../components/checkout/PaymentMark",
+        "../../components/ui/Modal",
+        "../../services/api"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/PeoplePage.tsx",
+      "responsibility": "Route page: pages/dashboard/PeoplePage.tsx",
+      "target": "frontend/src/pages/dashboard/PeoplePage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../../services/peopleService",
+        "../../components/ui/Modal",
+        "../../hooks/useAuth"
+      ],
+      "importsAfter": [
+        "react",
+        "../../services/peopleService",
+        "../../components/ui/Modal",
+        "../../hooks/useAuth"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/PosPage.tsx",
+      "responsibility": "Route page: pages/dashboard/PosPage.tsx",
+      "target": "frontend/src/pages/dashboard/PosPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../services/posScanner",
+        "../../services",
+        "../../types/commerce",
+        "../../components/catalog/ProductImage",
+        "../../components/pos/BillingPanel",
+        "../../components/pos/PaymentModal",
+        "../../components/pos/ReceiptPreview",
+        "../../components/pos/CameraScannerModal",
+        "../../services/supabaseClient"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../services/posScanner",
+        "../../services",
+        "../../types/commerce",
+        "../../components/catalog/ProductImage",
+        "../../components/pos/BillingPanel",
+        "../../components/pos/PaymentModal",
+        "../../components/pos/ReceiptPreview",
+        "../../components/pos/CameraScannerModal",
+        "../../services/supabaseClient"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/ProfilePage.tsx",
+      "responsibility": "Route page: pages/dashboard/ProfilePage.tsx",
+      "target": "frontend/src/pages/dashboard/ProfilePage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useAppTheme",
+        "../../services/peopleService",
+        "../../services/supabaseClient"
+      ],
+      "importsAfter": [
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useAppTheme",
+        "../../services/peopleService",
+        "../../services/supabaseClient"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/ReportsPage.tsx",
+      "responsibility": "Route page: pages/dashboard/ReportsPage.tsx",
+      "target": "frontend/src/pages/dashboard/ReportsPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../types/commerce",
+        "../../components/reports/BarChart",
+        "../../components/reports/SalesTable",
+        "../../components/pos/ReceiptPreview"
+      ],
+      "importsAfter": [
+        "react",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../types/commerce",
+        "../../components/reports/BarChart",
+        "../../components/reports/SalesTable",
+        "../../components/pos/ReceiptPreview"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/RoleDashboardPage.tsx",
+      "responsibility": "Route page: pages/dashboard/RoleDashboardPage.tsx",
+      "target": "frontend/src/pages/dashboard/RoleDashboardPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useCart",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/reports/reportService",
+        "../../services",
+        "../../services",
+        "../../services/money",
+        "../../types/roles",
+        "../../types/commerce",
+        "../../components/reports/BarChart",
+        "../../components/reports/SalesTable",
+        "../../components/pos/ReceiptPreview",
+        "../../services/checkout"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../hooks/useCart",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/reports/reportService",
+        "../../services",
+        "../../services",
+        "../../services/money",
+        "../../types/roles",
+        "../../types/commerce",
+        "../../components/reports/BarChart",
+        "../../components/reports/SalesTable",
+        "../../components/pos/ReceiptPreview",
+        "../../services/checkout"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/SettingsPage.tsx",
+      "responsibility": "Route page: pages/dashboard/SettingsPage.tsx",
+      "target": "frontend/src/pages/dashboard/SettingsPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "../../hooks/useAuth",
+        "../../services",
+        "../../services/supabaseClient"
+      ],
+      "importsAfter": [
+        "react",
+        "../../hooks/useAuth",
+        "../../services",
+        "../../services/supabaseClient"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/dashboard/WorkspacePage.tsx",
+      "responsibility": "Route page: pages/dashboard/WorkspacePage.tsx",
+      "target": "frontend/src/pages/dashboard/WorkspacePage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react"
+      ],
+      "importsAfter": [
+        "lucide-react"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/errors/NotFoundPage.tsx",
+      "responsibility": "Route page: pages/errors/NotFoundPage.tsx",
+      "target": "frontend/src/pages/errors/NotFoundPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react-router-dom"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react-router-dom"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/errors/UnauthorizedPage.tsx",
+      "responsibility": "Route page: pages/errors/UnauthorizedPage.tsx",
+      "target": "frontend/src/pages/errors/UnauthorizedPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../types/roles"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react-router-dom",
+        "../../hooks/useAuth",
+        "../../types/roles"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/AboutPage.tsx",
+      "responsibility": "Route page: pages/public/AboutPage.tsx",
+      "target": "frontend/src/pages/public/AboutPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react-router-dom",
+        "../../animations/ScrollReveal"
+      ],
+      "importsAfter": [
+        "react-router-dom",
+        "../../animations/ScrollReveal"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/AuthCallbackPage.tsx",
+      "responsibility": "Route page: pages/public/AuthCallbackPage.tsx",
+      "target": "frontend/src/pages/public/AuthCallbackPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth"
+      ],
+      "importsAfter": [
+        "react",
+        "react-router-dom",
+        "../../hooks/useAuth"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/CartPage.tsx",
+      "responsibility": "Route page: pages/public/CartPage.tsx",
+      "target": "frontend/src/pages/public/CartPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../components/catalog/ProductVisual",
+        "../../hooks/useAuth",
+        "../../hooks/useCart",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../types/product",
+        "../../services/supabaseClient",
+        "../../services/remote/cache",
+        "../../services/checkout",
+        "../../components/checkout/PaymentMark",
+        "../../components/ui/Modal",
+        "../../services/checkoutRecovery"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../components/catalog/ProductVisual",
+        "../../hooks/useAuth",
+        "../../hooks/useCart",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/money",
+        "../../types/product",
+        "../../services/supabaseClient",
+        "../../services/remote/cache",
+        "../../services/checkout",
+        "../../components/checkout/PaymentMark",
+        "../../components/ui/Modal",
+        "../../services/checkoutRecovery"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/CheckoutPaymentPage.tsx",
+      "responsibility": "Route page: pages/public/CheckoutPaymentPage.tsx",
+      "target": "frontend/src/pages/public/CheckoutPaymentPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "react-router-dom",
+        "lucide-react",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/checkout",
+        "../../services/remote/cache",
+        "../../services/money",
+        "../../components/checkout/PaymentMark"
+      ],
+      "importsAfter": [
+        "react",
+        "react-router-dom",
+        "lucide-react",
+        "../../hooks/useAuth",
+        "../../hooks/useProducts",
+        "../../services",
+        "../../services/checkout",
+        "../../services/remote/cache",
+        "../../services/money",
+        "../../components/checkout/PaymentMark"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/ComingSoonPage.tsx",
+      "responsibility": "Route page: pages/public/ComingSoonPage.tsx",
+      "target": "frontend/src/pages/public/ComingSoonPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react-router-dom"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react-router-dom"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/HomePage.tsx",
+      "responsibility": "Route page: pages/public/HomePage.tsx",
+      "target": "frontend/src/pages/public/HomePage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../animations/PageTransition",
+        "../../components/landing/CategorySection",
+        "../../components/landing/FaqSection",
+        "../../components/landing/FeatureTabs",
+        "../../components/landing/FeaturedProducts",
+        "../../components/landing/HomeHero",
+        "../../components/landing/EditorialIntro",
+        "../../components/landing/StickyStory",
+        "../../components/landing/LandingStorySections"
+      ],
+      "importsAfter": [
+        "../../animations/PageTransition",
+        "../../components/landing/CategorySection",
+        "../../components/landing/FaqSection",
+        "../../components/landing/FeatureTabs",
+        "../../components/landing/FeaturedProducts",
+        "../../components/landing/HomeHero",
+        "../../components/landing/EditorialIntro",
+        "../../components/landing/StickyStory",
+        "../../components/landing/LandingStorySections"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/ProductCatalogPage.tsx",
+      "responsibility": "Route page: pages/public/ProductCatalogPage.tsx",
+      "target": "frontend/src/pages/public/ProductCatalogPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../components/catalog/ProductCard",
+        "../../components/ui/Modal",
+        "../../services",
+        "../../hooks/useProducts"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../components/catalog/ProductCard",
+        "../../components/ui/Modal",
+        "../../services",
+        "../../hooks/useProducts"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/ProductDetailsPage.tsx",
+      "responsibility": "Route page: pages/public/ProductDetailsPage.tsx",
+      "target": "frontend/src/pages/public/ProductDetailsPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../components/catalog/ProductVisual",
+        "../../components/pos/QuantityControl",
+        "../../hooks/useCart",
+        "../../hooks/useProducts",
+        "../../services/money"
+      ],
+      "importsAfter": [
+        "lucide-react",
+        "react",
+        "react-router-dom",
+        "../../components/catalog/ProductVisual",
+        "../../components/pos/QuantityControl",
+        "../../hooks/useCart",
+        "../../hooks/useProducts",
+        "../../services/money"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/pages/public/ResetPasswordPage.tsx",
+      "responsibility": "Route page: pages/public/ResetPasswordPage.tsx",
+      "target": "frontend/src/pages/public/ResetPasswordPage.tsx",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "react",
+        "react-router-dom",
+        "../../services/supabaseClient"
+      ],
+      "importsAfter": [
+        "react",
+        "react-router-dom",
+        "../../services/supabaseClient"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/api.ts",
+      "responsibility": "Client service: services/api.ts",
+      "target": "frontend/src/services/api.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "./supabaseClient",
+        "./index",
+        "./storage/mockStorage",
+        "../types/auth",
+        "../types/product",
+        "../types/roles",
+        "./http",
+        "./apiUrl",
+        "./http"
+      ],
+      "importsAfter": [
+        "./supabaseClient",
+        "./index",
+        "./storage/mockStorage",
+        "../types/auth",
+        "../types/product",
+        "../types/roles",
+        "./http",
+        "./apiUrl",
+        "./http"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/apiUrl.ts",
+      "responsibility": "Client service: services/apiUrl.ts",
+      "target": "frontend/src/services/apiUrl.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/checkout.ts",
+      "responsibility": "Client service: services/checkout.ts",
+      "target": "frontend/src/services/checkout.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../types/product",
+        "../types/commerce",
+        "./api",
+        "./remote/cache"
+      ],
+      "importsAfter": [
+        "../types/product",
+        "../types/commerce",
+        "./api",
+        "./remote/cache"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/checkoutRecovery.ts",
+      "responsibility": "Client service: services/checkoutRecovery.ts",
+      "target": "frontend/src/services/checkoutRecovery.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../types/product",
+        "./api",
+        "./storage/authStorage",
+        "./remote/cache"
+      ],
+      "importsAfter": [
+        "../types/product",
+        "./api",
+        "./storage/authStorage",
+        "./remote/cache"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/http.ts",
+      "responsibility": "Client service: services/http.ts",
+      "target": "frontend/src/services/http.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/index.ts",
+      "responsibility": "Client service: services/index.ts",
+      "target": "frontend/src/services/index.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "./supabaseClient",
+        "./products/mockProductService",
+        "./inventory/mockInventoryService",
+        "./sales/mockSalesService",
+        "./payments/mockPaymentService",
+        "./orders/mockOrderService",
+        "./reports/reportService",
+        "./settingsService",
+        "./products/productManagementService",
+        "./uploadService",
+        "./remote/apiServices"
+      ],
+      "importsAfter": [
+        "./supabaseClient",
+        "./products/mockProductService",
+        "./inventory/mockInventoryService",
+        "./sales/mockSalesService",
+        "./payments/mockPaymentService",
+        "./orders/mockOrderService",
+        "./reports/reportService",
+        "./settingsService",
+        "./products/productManagementService",
+        "./uploadService",
+        "./remote/apiServices"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/inventory/inventoryService.ts",
+      "responsibility": "Client service: services/inventory/inventoryService.ts",
+      "target": "frontend/src/services/inventory/inventoryService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/auth",
+        "../../types/commerce",
+        "../../types/product"
+      ],
+      "importsAfter": [
+        "../../types/auth",
+        "../../types/commerce",
+        "../../types/product"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/inventory/mockInventoryService.ts",
+      "responsibility": "Client service: services/inventory/mockInventoryService.ts",
+      "target": "frontend/src/services/inventory/mockInventoryService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../mockStore",
+        "../money",
+        "./inventoryService"
+      ],
+      "importsAfter": [
+        "../mockStore",
+        "../money",
+        "./inventoryService"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/mockStore.ts",
+      "responsibility": "Client service: services/mockStore.ts",
+      "target": "frontend/src/services/mockStore.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../data/grocerySeed",
+        "../types/auth",
+        "../types/commerce",
+        "../types/product",
+        "./storage/mockStorage",
+        "./productImages"
+      ],
+      "importsAfter": [
+        "../data/grocerySeed",
+        "../types/auth",
+        "../types/commerce",
+        "../types/product",
+        "./storage/mockStorage",
+        "./productImages"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/money.ts",
+      "responsibility": "Client service: services/money.ts",
+      "target": "frontend/src/services/money.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/orders/mockOrderService.ts",
+      "responsibility": "Client service: services/orders/mockOrderService.ts",
+      "target": "frontend/src/services/orders/mockOrderService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/auth",
+        "../../types/commerce",
+        "../money",
+        "../mockStore",
+        "../checkout"
+      ],
+      "importsAfter": [
+        "../../types/auth",
+        "../../types/commerce",
+        "../money",
+        "../mockStore",
+        "../checkout"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/payments/mockPaymentService.ts",
+      "responsibility": "Client service: services/payments/mockPaymentService.ts",
+      "target": "frontend/src/services/payments/mockPaymentService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/commerce",
+        "../mockStore",
+        "../money",
+        "./paymentService"
+      ],
+      "importsAfter": [
+        "../../types/commerce",
+        "../mockStore",
+        "../money",
+        "./paymentService"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/payments/paymentService.ts",
+      "responsibility": "Client service: services/payments/paymentService.ts",
+      "target": "frontend/src/services/payments/paymentService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/commerce"
+      ],
+      "importsAfter": [
+        "../../types/commerce"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/peopleService.ts",
+      "responsibility": "Client service: services/peopleService.ts",
+      "target": "frontend/src/services/peopleService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "./supabaseClient",
+        "./api",
+        "../types/auth"
+      ],
+      "importsAfter": [
+        "./supabaseClient",
+        "./api",
+        "../types/auth"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/posScanner.ts",
+      "responsibility": "Client service: services/posScanner.ts",
+      "target": "frontend/src/services/posScanner.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/productImages.ts",
+      "responsibility": "Client service: services/productImages.ts",
+      "target": "frontend/src/services/productImages.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../data/productImages.json"
+      ],
+      "importsAfter": [
+        "../data/productImages.json"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/products/mockProductService.ts",
+      "responsibility": "Client service: services/products/mockProductService.ts",
+      "target": "frontend/src/services/products/mockProductService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../mockStore",
+        "./productService"
+      ],
+      "importsAfter": [
+        "../mockStore",
+        "./productService"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/products/productManagementService.ts",
+      "responsibility": "Client service: services/products/productManagementService.ts",
+      "target": "frontend/src/services/products/productManagementService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/product",
+        "../../types/auth",
+        "../money",
+        "../mockStore"
+      ],
+      "importsAfter": [
+        "../../types/product",
+        "../../types/auth",
+        "../money",
+        "../mockStore"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/products/productService.ts",
+      "responsibility": "Client service: services/products/productService.ts",
+      "target": "frontend/src/services/products/productService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/product"
+      ],
+      "importsAfter": [
+        "../../types/product"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/remote/apiServices.ts",
+      "responsibility": "Client service: services/remote/apiServices.ts",
+      "target": "frontend/src/services/remote/apiServices.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../products/productService",
+        "../inventory/inventoryService",
+        "../sales/salesService",
+        "../payments/paymentService",
+        "../../types/auth",
+        "../../types/commerce",
+        "../../types/product",
+        "../products/productManagementService",
+        "./cache",
+        "../api",
+        "../http",
+        "../checkout",
+        "../checkoutRecovery",
+        "../reports/reportService"
+      ],
+      "importsAfter": [
+        "../products/productService",
+        "../inventory/inventoryService",
+        "../sales/salesService",
+        "../payments/paymentService",
+        "../../types/auth",
+        "../../types/commerce",
+        "../../types/product",
+        "../products/productManagementService",
+        "./cache",
+        "../api",
+        "../http",
+        "../checkout",
+        "../checkoutRecovery",
+        "../reports/reportService"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/remote/cache.ts",
+      "responsibility": "Client service: services/remote/cache.ts",
+      "target": "frontend/src/services/remote/cache.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/product",
+        "../../types/commerce",
+        "../api",
+        "../checkout"
+      ],
+      "importsAfter": [
+        "../../types/product",
+        "../../types/commerce",
+        "../api",
+        "../checkout"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/reports/reportService.ts",
+      "responsibility": "Client service: services/reports/reportService.ts",
+      "target": "frontend/src/services/reports/reportService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/auth",
+        "../../types/commerce",
+        "../mockStore",
+        "../money"
+      ],
+      "importsAfter": [
+        "../../types/auth",
+        "../../types/commerce",
+        "../mockStore",
+        "../money"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/sales/mockSalesService.ts",
+      "responsibility": "Client service: services/sales/mockSalesService.ts",
+      "target": "frontend/src/services/sales/mockSalesService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../money",
+        "../mockStore",
+        "../payments/mockPaymentService",
+        "../../types/commerce",
+        "./salesService"
+      ],
+      "importsAfter": [
+        "../money",
+        "../mockStore",
+        "../payments/mockPaymentService",
+        "../../types/commerce",
+        "./salesService"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/sales/salesService.ts",
+      "responsibility": "Client service: services/sales/salesService.ts",
+      "target": "frontend/src/services/sales/salesService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../../types/auth",
+        "../../types/commerce"
+      ],
+      "importsAfter": [
+        "../../types/auth",
+        "../../types/commerce"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/settingsService.ts",
+      "responsibility": "Client service: services/settingsService.ts",
+      "target": "frontend/src/services/settingsService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "../types/auth",
+        "../types/commerce",
+        "./mockStore"
+      ],
+      "importsAfter": [
+        "../types/auth",
+        "../types/commerce",
+        "./mockStore"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/storage/authStorage.ts",
+      "responsibility": "Client service: services/storage/authStorage.ts",
+      "target": "frontend/src/services/storage/authStorage.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/storage/mockStorage.ts",
+      "responsibility": "Client service: services/storage/mockStorage.ts",
+      "target": "frontend/src/services/storage/mockStorage.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/supabaseClient.ts",
+      "responsibility": "Client service: services/supabaseClient.ts",
+      "target": "frontend/src/services/supabaseClient.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "@supabase/supabase-js",
+        "./storage/authStorage"
+      ],
+      "importsAfter": [
+        "@supabase/supabase-js",
+        "./storage/authStorage"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/services/uploadService.ts",
+      "responsibility": "Client service: services/uploadService.ts",
+      "target": "frontend/src/services/uploadService.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/types/auth.ts",
+      "responsibility": "Existing application data contract: types/auth.ts",
+      "target": "frontend/src/types/auth.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "./roles"
+      ],
+      "importsAfter": [
+        "./roles"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/types/commerce.ts",
+      "responsibility": "Existing application data contract: types/commerce.ts",
+      "target": "frontend/src/types/commerce.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "./product",
+        "./auth"
+      ],
+      "importsAfter": [
+        "./product",
+        "./auth"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/types/product.ts",
+      "responsibility": "Existing application data contract: types/product.ts",
+      "target": "frontend/src/types/product.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/src/types/roles.ts",
+      "responsibility": "Existing application data contract: types/roles.ts",
+      "target": "frontend/src/types/roles.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [],
+      "importsAfter": [],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/tests/browser-driver.mjs",
+      "responsibility": "Verification: browser-driver.mjs",
+      "target": "frontend/tests/browser-driver.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "importsAfter": [
+        "./protocol.ts",
+        "node:child_process",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/commerce-checks.mjs",
+      "responsibility": "Verification: commerce-checks.mjs",
+      "target": "frontend/tests/commerce-checks.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "/src/services/index.ts",
+        "/src/services/mockStore.ts",
+        "/src/services/storage/mockStorage.ts",
+        "/src/services/money.ts",
+        "/src/services/posScanner.ts",
+        "/src/services/reports/reportService.ts",
+        "/src/services/orders/mockOrderService.ts",
+        "/src/services/productImages.ts"
+      ],
+      "importsAfter": [
+        "../src/types/commerce",
+        "../src/services/index.ts",
+        "../src/services/mockStore.ts",
+        "../src/services/storage/mockStorage.ts",
+        "../src/services/money.ts",
+        "../src/services/posScanner.ts",
+        "../src/services/reports/reportService.ts",
+        "../src/services/orders/mockOrderService.ts",
+        "../src/services/productImages.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/unit/api-url.test.mjs",
+      "responsibility": "Verification: api-url.test.mjs",
+      "target": "frontend/tests/unit/api-url.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "../../src/services/apiUrl.ts"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "../../src/services/apiUrl.ts"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/tests/unit/auth-storage.test.mjs",
+      "responsibility": "Verification: auth-storage.test.mjs",
+      "target": "frontend/tests/unit/auth-storage.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "../../src/services/storage/authStorage.ts"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "../../src/services/storage/authStorage.ts"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/tests/unit/commerce.test.mjs",
+      "responsibility": "Verification: commerce.test.mjs",
+      "target": "frontend/tests/unit/commerce.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs/promises",
+        "../../src/services/money.ts",
+        "../../src/services/posScanner.ts"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs/promises",
+        "../../src/services/money.ts",
+        "../../src/services/posScanner.ts"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/tests/unit/http.test.mjs",
+      "responsibility": "Verification: http.test.mjs",
+      "target": "frontend/tests/unit/http.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "../../src/services/http.ts"
+      ],
+      "importsAfter": [
+        "node:test",
+        "node:assert/strict",
+        "../../src/services/http.ts"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "frontend/tests/unit/proxy.test.mjs",
+      "responsibility": "Verification: proxy.test.mjs",
+      "target": "frontend/tests/unit/proxy.test.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:test",
+        "node:assert/strict",
+        "node:http",
+        "vite",
+        "../../api-proxy.ts"
+      ],
+      "importsAfter": [
+        "node:http",
+        "node:net",
+        "node:test",
+        "node:assert/strict",
+        "node:http",
+        "vite",
+        "../../api-proxy.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/verify-auth-storage.mjs",
+      "responsibility": "Verification: verify-auth-storage.mjs",
+      "target": "frontend/tests/verify-auth-storage.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "../../backend/src/env.mjs",
+        "../../backend/src/db.mjs",
+        "../../backend/tests/helpers/live-fixture.mjs",
+        "./browser-driver.mjs"
+      ],
+      "importsAfter": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "../../backend/src/env.ts",
+        "../../backend/src/db.ts",
+        "../../backend/tests/helpers/live-fixture.mts",
+        "./browser-driver.mts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/verify-auth.mjs",
+      "responsibility": "Verification: verify-auth.mjs",
+      "target": "frontend/tests/verify-auth.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "@supabase/supabase-js",
+        "../../backend/src/env.mjs",
+        "../../backend/src/db.mjs",
+        "../../backend/tests/helpers/live-fixture.mjs",
+        "./browser-driver.mjs"
+      ],
+      "importsAfter": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "@supabase/supabase-js",
+        "../../backend/src/env.ts",
+        "../../backend/src/db.ts",
+        "../../backend/tests/helpers/live-fixture.mts",
+        "./browser-driver.mts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/verify-browser.mjs",
+      "responsibility": "Verification: verify-browser.mjs",
+      "target": "frontend/tests/verify-browser.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "node:url"
+      ],
+      "importsAfter": [
+        "./protocol.ts",
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "node:url"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/verify-checkout.mjs",
+      "responsibility": "Verification: verify-checkout.mjs",
+      "target": "frontend/tests/verify-checkout.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "../../backend/tests/helpers/live-fixture.mjs",
+        "../../backend/src/env.mjs",
+        "./browser-driver.mjs",
+        "../../backend/src/db.mjs"
+      ],
+      "importsAfter": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "../../backend/tests/helpers/live-fixture.mts",
+        "../../backend/src/env.ts",
+        "./browser-driver.mts",
+        "../../backend/src/db.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/verify-navigation.mjs",
+      "responsibility": "Verification: verify-navigation.mjs",
+      "target": "frontend/tests/verify-navigation.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "node:url",
+        "./browser-driver.mjs"
+      ],
+      "importsAfter": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "node:url",
+        "./browser-driver.mts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/verify-startup.mjs",
+      "responsibility": "Verification: verify-startup.mjs",
+      "target": "frontend/tests/verify-startup.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "../../backend/src/env.mjs",
+        "./browser-driver.mjs"
+      ],
+      "importsAfter": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "../../backend/src/env.ts",
+        "./browser-driver.mts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/tests/verify-supabase.mjs",
+      "responsibility": "Verification: verify-supabase.mjs",
+      "target": "frontend/tests/verify-supabase.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "../../backend/tests/helpers/live-fixture.mjs",
+        "../../backend/src/env.mjs",
+        "./browser-driver.mjs",
+        "../../backend/src/db.mjs"
+      ],
+      "importsAfter": [
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "../../backend/tests/helpers/live-fixture.mts",
+        "../../backend/src/env.ts",
+        "./browser-driver.mts",
+        "../../backend/src/db.ts"
+      ],
+      "importsModified": true
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "responsibility": "Tool configuration",
+      "target": "frontend/vite.config.ts",
+      "status": "existing TypeScript",
+      "importsBefore": [
+        "@vitejs/plugin-react",
+        "vite",
+        "@tailwindcss/vite",
+        "node:url",
+        "./api-proxy.ts",
+        "./src/services/apiUrl.ts"
+      ],
+      "importsAfter": [
+        "@vitejs/plugin-react",
+        "vite",
+        "@tailwindcss/vite",
+        "node:url",
+        "./api-proxy.ts",
+        "./src/services/apiUrl.ts"
+      ],
+      "importsModified": false
+    },
+    {
+      "path": "scripts/dev.mjs",
+      "responsibility": "Operator/development utility: dev.mjs",
+      "target": "scripts/dev.mts",
+      "status": "converted; typechecked",
+      "importsBefore": [
+        "node:child_process",
+        "node:url",
+        "node:path"
+      ],
+      "importsAfter": [
+        "node:child_process",
+        "node:url",
+        "node:path"
+      ],
+      "importsModified": false
+    }
+  ]
+}

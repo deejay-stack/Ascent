@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node", "vite/client"],
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "backend/scripts/**/*.mts",
+    "backend/tests/**/*.mts",
+    "backend/prisma.config.ts",
+    "scripts/**/*.mts",
+    "frontend/scripts/**/*.mts",
+    "frontend/tests/**/*.mts"
+  ]
+}

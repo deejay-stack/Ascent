@@ -2,5 +2,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "express",
-  "buildCommand": "npm run build --workspace @ascent/backend"
+  "buildCommand": "npm run build"
 }
+
